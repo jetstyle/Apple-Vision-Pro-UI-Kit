@@ -1,0 +1,32 @@
+{
+  "name": "com.jetxr.visionui",
+  "displayName": "Vision UI",
+  "version": "1.0.0",
+  "unity": "2021.3",
+  "description": "JetStyle Vision UI Package",
+  "author": {
+    "name": "JetStyle",
+    "url": "https://jet.style"
+  },
+  "samples": [
+    {
+      "displayName": "Fonts",
+      "description": "Contains prepared fonts for TextMeshPro based on SF Pro font",
+      "path": "Samples~/Fonts"
+    },
+	{
+      "displayName": "Icons",
+      "description": "Contains the most common icons from the SF Symbols library",
+      "path": "Samples~/Icons"
+    },
+    {
+      "description": "Contains a scene with prepared interface showing all elements usage.",
+      "displayName": "Demo",
+      "path": "Samples~/Demo"
+    }
+  ],
+  "dependencies": {
+    "com.unity.xr.interaction.toolkit": "2.0.4",
+    "com.unity.textmeshpro": "3.0.6"
+  }
+}
