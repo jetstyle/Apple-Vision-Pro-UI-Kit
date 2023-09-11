@@ -13,6 +13,8 @@ https://github.com/jetstyle/Apple-Vision-Pro-UI-Kit.git
 ```
 3. You can also download it from the [Asset Store](https://u3d.as/39rT)
 
+4. Prepared demo project for Meta Quest is avaliable [here](https://github.com/jetstyle/Apple-Vision-Pro-UI-Kit-Demo)
+
 ## How it use?
 Our package provides a collection of UI elements that can be added to a scene using the GameObject context menu.
 
