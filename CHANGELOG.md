@@ -6,5 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- Headers should be listed in this order: Added, Changed, Deprecated, Removed, Fixed, Security -->
 
+## [1.0.1] - 2023-09-11
+Fixed:
+	- List elements highlights in PlayerWindow
+
 ## [1.0.0] - 2023-09-11
 ### Initial release
