@@ -6,7 +6,7 @@
 <h4 align="center">
   <a href="https://jet.style/">JetStyle</a> |
   <a href="https://jetxr.style/">JetXR</a> |
-  <a href="https://u3d.as/39rT">Asset Store</a>
+  <a href="https://discord.gg/YYprp42G">Discord</a>
 </h4>
 
 ### Apple Vision Pro UI Kit © 2023 JetStyle
@@ -41,14 +41,14 @@ https://github.com/jetstyle/Apple-Vision-Pro-UI-Kit.git
 ```
 "com.jetxr.visionui": "https://github.com/jetstyle/Apple-Vision-Pro-UI-Kit.git"
 ```
-3. You can also download it from the [Asset Store](https://u3d.as/39rT)
+3. You can also download it from the Asset Store (a link will appear here soon)
 
 4. Prepared demo project for Meta Quest is avaliable [here](https://github.com/jetstyle/Apple-Vision-Pro-UI-Kit-Demo)
 
 ## How to use it?
 Our package provides a collection of UI elements that can be added to a scene using the GameObject context menu.
 
-<img alt="GameObject Context Menu" height="550" src="./Documentation~/GameObject_Context_Menu.png">
+<img alt="GameObject Context Menu" width="750" src="./Documentation~/GameObject_Context_Menu.png">
 
 ## UI Elements List
 
