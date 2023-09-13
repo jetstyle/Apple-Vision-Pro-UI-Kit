@@ -45,7 +45,7 @@ https://github.com/jetstyle/Apple-Vision-Pro-UI-Kit.git
 
 4. Prepared demo project for Meta Quest is avaliable [here](https://github.com/jetstyle/Apple-Vision-Pro-UI-Kit-Demo)
 
-## How it use?
+## How to use it?
 Our package provides a collection of UI elements that can be added to a scene using the GameObject context menu.
 
 <img alt="GameObject Context Menu" height="550" src="./Documentation~/GameObject_Context_Menu.png">
