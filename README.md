@@ -19,8 +19,8 @@ Just download this UI kit (it’s based on the official Apple Figma kit) to buil
 This Unity UI kit will give you an opportunity to: 
 
 + Create a functional app prototype
-+ See how it behaves in VR 
-+ Test it on real users 
++ See how it behaves in spatial environment (aka "VR")
++ Test it on real users
 + Experiment and improve it, so that it’s perfect by the time Vision Pro is out.
 
 <a href="https://www.youtube.com/watch?v=D28MGn96O3c">Watch our video on YouTube</a>
@@ -29,6 +29,9 @@ This Unity UI kit will give you an opportunity to:
     <img alt="Apple Vision Pro UI Kit Video" src="./Documentation~/Video_Preview.png">
   </a>
 </p>
+
+## System Requirements
+Unity **2021.3.30f1** or later versions.
 
 ## Installation
 1. You can install it with **Package Manager** > **+** > **Add package from git URL...**
@@ -41,6 +44,7 @@ https://github.com/jetstyle/Apple-Vision-Pro-UI-Kit.git
 ```
 "com.jetxr.visionui": "https://github.com/jetstyle/Apple-Vision-Pro-UI-Kit.git"
 ```
+
 3. You can also download it from the Asset Store (a link will appear here soon)
 
 4. Prepared demo project for Meta Quest is avaliable [here](https://github.com/jetstyle/Apple-Vision-Pro-UI-Kit-Demo)
@@ -48,12 +52,38 @@ https://github.com/jetstyle/Apple-Vision-Pro-UI-Kit.git
 ## How to use it?
 Our package provides a collection of UI elements that can be added to a scene using the GameObject context menu.
 
-<img alt="GameObject Context Menu" width="750" src="./Documentation~/GameObject_Context_Menu.png">
+<img alt="GameObject Context Menu" width = "750px" src="./Documentation~/GameObject_Context_Menu.png">
+
+A small gif with the process of working with our package:
+<p align="center">
+  <img alt="Editor Gif" src="./Documentation~/Editor_Example.gif">
+</p>
+
+## Showcases
+Demonstration of interfaces based on our package (captured on Meta Quest 2 with our panorama):
+<p align="center">
+  <img src="./Documentation~/Player_Example_1.png" width="49%" />
+  <img src="./Documentation~/Player_Example_3.png" width="49%" />
+</p>
+
+<p align="center">
+  <img src="./Documentation~/Player_Example_4.png" width="49%" />
+  <img src="./Documentation~/Player_Example_2.png" width="49%" />
+</p>
 
 ## UI Elements List
 
 <p align="center">
   <img alt="UI Elements" src="./Documentation~/UI_Elements.png">
+</p>
+
+<p align="center">
+  <img src="./Documentation~/UI_Elements_2.png" width="49%" />
+  <img src="./Documentation~/UI_Elements_1.png" width="49%" />
+</p>
+
+<p align="center">
+  <img alt="UI Elements 3" src="./Documentation~/UI_Elements_3.png">
 </p>
 
 1. Buttons
