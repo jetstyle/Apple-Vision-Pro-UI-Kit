@@ -16,12 +16,14 @@ Added:
 - New menu item - Version of list element with background "Vision UI/List/List Element"
 - Description to Environment Control in "Demo" sample
 - Hover state to viewer cards in "Demo" sample
+
 Changed:
 - Minimum editor version to 2021.3.30f1
 - Minimum version of XRIT package to 2.4.1.
 - Window controls are separated into a new menu item "Vision UI/Windows/Add-ons/Window Controls" and now they are not spawned together with windows, only together with Window stacker.
 - List element without background renamed to "List Element (No Platter)"
 - Windows in "Demo" sample for new structure with stacker
+
 Fixed:
 - Highlights of some elements
 - Minor fixes in code, sprites and animations
