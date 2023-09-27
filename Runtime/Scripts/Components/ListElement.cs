@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -8,6 +9,7 @@ namespace JetXR.VisionUI
     public class ListElement : UIBehaviour
     {
         [SerializeField] private Image image;
+        [SerializeField] private List<Image> additionalImages = new List<Image>();
         [SerializeField] private Sprite singleElementSprite;
         [SerializeField] private Sprite firstElementSprite;
         [SerializeField] private Sprite middleElementSprite;
@@ -58,37 +60,49 @@ namespace JetXR.VisionUI
             bool previousChildIsListElement = previousChild != null && previousChild.TryGetComponent<ListElement>(out _);
             bool nextChildIsListElement = nextChild != null && nextChild.TryGetComponent<ListElement>(out _);
 
+            var targetSprite = singleElementSprite;
+
             if (previousChildIsListElement)
             {
                 if (nextChildIsListElement)
                 {
-                    image.sprite = middleElementSprite;
+                    targetSprite = middleElementSprite;
                 }
                 else
                 {
-                    image.sprite = lastElementSprite;
+                    targetSprite = lastElementSprite;
                 }
             }
             else
             {
                 if (nextChildIsListElement)
                 {
-                    image.sprite = firstElementSprite;
+                    targetSprite = firstElementSprite;
                 }
                 else
                 {
-                    image.sprite = singleElementSprite;
+                    targetSprite = singleElementSprite;
                 }
+            }
+
+            image.sprite = targetSprite;
+
+            foreach (var additionalImage in additionalImages)
+            {
+                additionalImage.sprite = targetSprite;
             }
         }
 
-        public void SetReferences(Image newImage, Sprite newSingleElementSprite, Sprite newFirstElementSprite, Sprite newMiddleElementSprite, Sprite newLastElementSprite)
+        public void SetReferences(Image newImage, Sprite newSingleElementSprite, Sprite newFirstElementSprite, Sprite newMiddleElementSprite, Sprite newLastElementSprite, List<Image> newAdditionalImages = null)
         {
             image = newImage;
             singleElementSprite = newSingleElementSprite;
             firstElementSprite = newFirstElementSprite;
             middleElementSprite = newMiddleElementSprite;
             lastElementSprite = newLastElementSprite;
+            
+            if (newAdditionalImages != null)
+                additionalImages = newAdditionalImages;
         }
     }
 }

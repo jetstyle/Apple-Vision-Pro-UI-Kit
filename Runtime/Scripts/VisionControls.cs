@@ -23,7 +23,10 @@ namespace JetXR.VisionUI
         private static Vector2 s_ImageElementSize = new Vector2(100f, 100f);
         private static Color s_DefaultSelectableColor = new Color(1f, 1f, 1f, 1f);
         private static Color s_PanelColor = new Color(1f, 1f, 1f, 0.392f);
-        private static Color s_TextColor = new Color(50f / 255f, 50f / 255f, 50f / 255f, 1f);
+        private static Color s_TextColorPrimary = new Color(1, 1, 1, 1);
+        private static Color s_TextColorSecondary = new Color(1, 1, 1, 0.25f);
+        private static Color s_TextColorTertiary = new Color(1, 1, 1, 0.1f);
+        private static Color s_WindowElementColor = new Color(1, 1, 1, 1);
         #endregion
 
         #region Utilities
@@ -89,11 +92,13 @@ namespace JetXR.VisionUI
         {
             public Material darkElementMaterial;
             public Material lightElementMaterial;
+            public Material lightElementWithFrameMaterial;
             public Material windowBlurredBackgroundMaterial;
             public Material windowBlurredOverlayMaterial;
             public Material windowOverlayMaterial;
             public Material toolbarBlurredOverlayMaterial;
             public Material tabbarBlurredOverlayMaterial;
+            public Material alphaBackgroundMaterial;
 
             public TMP_FontAsset fontSemibold;
             public TMP_FontAsset fontBold;
@@ -155,6 +160,7 @@ namespace JetXR.VisionUI
             public Sprite windowGlassNoAlpha;
             public Sprite windowGlassSmallerSpecular;
             public Sprite windowShadow;
+            public Sprite windowFloorShadow;
             public Sprite sidebar;
 
             public Sprite scrollbarHandle;
@@ -179,7 +185,7 @@ namespace JetXR.VisionUI
             public Sprite crossIcon;
 
             public Sprite tabbarBackground;
-            public Sprite tabbarToggleHighlight;
+            public Sprite segmentedControlHighlight;
             public Sprite tabbarShadow;
         }
 
@@ -188,6 +194,7 @@ namespace JetXR.VisionUI
         {
             GameObject root = CreateUIElementRoot("Button - Text", new Vector2(86f, 44f), typeof(Image), typeof(Button), typeof(Animator));
 
+            GameObject alphaBackground = CreateUIObject("Alpha Background", root, typeof(Image));
             GameObject highlight = CreateUIObject("Highlight", root, typeof(Image));
             GameObject text = CreateUIObject("Text", root, typeof(TextMeshProUGUI));
 
@@ -205,15 +212,13 @@ namespace JetXR.VisionUI
             // Image
             Image background = root.GetComponent<Image>();
             background.sprite = resources.buttonBackground;
-            background.color = new Color(1, 1, 1, 0);
+            background.color = s_WindowElementColor;
             background.material = resources.lightElementMaterial;
             background.type = Image.Type.Sliced;
             background.pixelsPerUnitMultiplier = 4;
             background.raycastPadding = new Vector4(0, -8, 0, -8);
 
-            // Canvas Renderer
-            CanvasRenderer canvasRenderer = root.GetComponent<CanvasRenderer>();
-            canvasRenderer.cullTransparentMesh = false;
+            SetupWindowElement(root, alphaBackground, resources);
 
             // Highlight
             Image highlightImage = highlight.GetComponent<Image>();
@@ -258,11 +263,12 @@ namespace JetXR.VisionUI
             Image background = button.GetComponent<Image>();
             background.color = new Color(1f, 1f, 1f, 0f);
 
-            CanvasRenderer canvasRenderer = button.GetComponent<CanvasRenderer>();
-            canvasRenderer.cullTransparentMesh = true;
-
             Image highlightImage = highlight.GetComponent<Image>();
             highlightImage.color = new Color(1f, 1f, 1f, 0f);
+
+            GameObject alphaBackground = button.transform.Find("Alpha Background").gameObject;
+            Image alphaBackgroundImage = alphaBackground.GetComponent<Image>();
+            alphaBackgroundImage.color = new Color(1, 1, 1, 0);
 
             return button;
         }
@@ -272,6 +278,7 @@ namespace JetXR.VisionUI
         {
             GameObject root = CreateUIElementRoot("Button - Text+Symbol", new Vector2(120f, 44f), typeof(Image), typeof(Button), typeof(Animator));
 
+            GameObject alphaBackground = CreateUIObject("Alpha Background", root, typeof(Image));
             GameObject highlight = CreateUIObject("Highlight", root, typeof(Image));
             GameObject text = CreateUIObject("Text", root, typeof(TextMeshProUGUI));
             GameObject symbol = CreateUIObject("Symbol", root, typeof(Image));
@@ -290,15 +297,13 @@ namespace JetXR.VisionUI
             // Image
             Image background = root.GetComponent<Image>();
             background.sprite = resources.buttonBackground;
-            background.color = new Color(1, 1, 1, 0);
+            background.color = s_WindowElementColor;
             background.material = resources.lightElementMaterial;
             background.type = Image.Type.Sliced;
             background.pixelsPerUnitMultiplier = 4;
             background.raycastPadding = new Vector4(0, -8, 0, -8);
 
-            // Canvas Renderer
-            CanvasRenderer canvasRenderer = root.GetComponent<CanvasRenderer>();
-            canvasRenderer.cullTransparentMesh = false;
+            SetupWindowElement(root, alphaBackground, resources);
 
             // Highlight
             Image highlightImage = highlight.GetComponent<Image>();
@@ -354,11 +359,12 @@ namespace JetXR.VisionUI
             Image background = button.GetComponent<Image>();
             background.color = new Color(1f, 1f, 1f, 0f);
 
-            CanvasRenderer canvasRenderer = button.GetComponent<CanvasRenderer>();
-            canvasRenderer.cullTransparentMesh = true;
-
             Image highlightImage = highlight.GetComponent<Image>();
             highlightImage.color = new Color(1f, 1f, 1f, 0f);
+
+            GameObject alphaBackground = button.transform.Find("Alpha Background").gameObject;
+            Image alphaBackgroundImage = alphaBackground.GetComponent<Image>();
+            alphaBackgroundImage.color = new Color(1, 1, 1, 0);
 
             return button;
         }
@@ -368,6 +374,7 @@ namespace JetXR.VisionUI
         {
             GameObject root = CreateUIElementRoot("Button - Text Rounded Rect", new Vector2(86f, 44f), typeof(Image), typeof(Button), typeof(Animator));
 
+            GameObject alphaBackground = CreateUIObject("Alpha Background", root, typeof(Image));
             GameObject highlight = CreateUIObject("Highlight", root, typeof(Image));
             GameObject text = CreateUIObject("Text", root, typeof(TextMeshProUGUI));
 
@@ -385,15 +392,13 @@ namespace JetXR.VisionUI
             // Image
             Image background = root.GetComponent<Image>();
             background.sprite = resources.roundedRectBackground;
-            background.color = new Color(1, 1, 1, 0);
+            background.color = s_WindowElementColor;
             background.material = resources.lightElementMaterial;
             background.type = Image.Type.Sliced;
             background.pixelsPerUnitMultiplier = 4;
             background.raycastPadding = new Vector4(0, -8, 0, -8);
 
-            // Canvas Renderer
-            CanvasRenderer canvasRenderer = root.GetComponent<CanvasRenderer>();
-            canvasRenderer.cullTransparentMesh = false;
+            SetupWindowElement(root, alphaBackground, resources);
 
             // Highlight
             Image highlightImage = highlight.GetComponent<Image>();
@@ -438,11 +443,12 @@ namespace JetXR.VisionUI
             Image background = button.GetComponent<Image>();
             background.color = new Color(1f, 1f, 1f, 0f);
 
-            CanvasRenderer canvasRenderer = button.GetComponent<CanvasRenderer>();
-            canvasRenderer.cullTransparentMesh = true;
-
             Image highlightImage = highlight.GetComponent<Image>();
             highlightImage.color = new Color(1f, 1f, 1f, 0f);
+
+            GameObject alphaBackground = button.transform.Find("Alpha Background").gameObject;
+            Image alphaBackgroundImage = alphaBackground.GetComponent<Image>();
+            alphaBackgroundImage.color = new Color(1, 1, 1, 0);
 
             return button;
         }
@@ -452,6 +458,7 @@ namespace JetXR.VisionUI
         {
             GameObject root = CreateUIElementRoot("Button - Symbol", new Vector2(44f, 44f), typeof(Image), typeof(Button), typeof(Animator));
 
+            GameObject alphaBackground = CreateUIObject("Alpha Background", root, typeof(Image));
             GameObject highlight = CreateUIObject("Highlight", root, typeof(Image));
             GameObject symbol = CreateUIObject("Symbol", root, typeof(Image));
 
@@ -469,15 +476,13 @@ namespace JetXR.VisionUI
             // Image
             Image background = root.GetComponent<Image>();
             background.sprite = resources.buttonBackground;
-            background.color = new Color(1, 1, 1, 0);
+            background.color = s_WindowElementColor;
             background.material = resources.lightElementMaterial;
             background.type = Image.Type.Sliced;
             background.pixelsPerUnitMultiplier = 4;
             background.raycastPadding = new Vector4(-8, -8, -8, -8);
 
-            // Canvas Renderer
-            CanvasRenderer canvasRenderer = root.GetComponent<CanvasRenderer>();
-            canvasRenderer.cullTransparentMesh = false;
+            SetupWindowElement(root, alphaBackground, resources);
 
             // Highlight
             Image highlightImage = highlight.GetComponent<Image>();
@@ -514,11 +519,12 @@ namespace JetXR.VisionUI
             Image background = button.GetComponent<Image>();
             background.color = new Color(1f, 1f, 1f, 0f);
 
-            CanvasRenderer canvasRenderer = button.GetComponent<CanvasRenderer>();
-            canvasRenderer.cullTransparentMesh = true;
-
             Image highlightImage = highlight.GetComponent<Image>();
             highlightImage.color = new Color(1f, 1f, 1f, 0f);
+
+            GameObject alphaBackground = button.transform.Find("Alpha Background").gameObject;
+            Image alphaBackgroundImage = alphaBackground.GetComponent<Image>();
+            alphaBackgroundImage.color = new Color(1, 1, 1, 0);
 
             return button;
         }
@@ -527,8 +533,9 @@ namespace JetXR.VisionUI
         public static GameObject CreateSmallSlider(Resources resources)
         {
             GameObject root = CreateUIElementRoot("Small Slider", new Vector2(288f, 16f), typeof(Slider), typeof(Animator));
-     
+
             GameObject background = CreateUIObject("Background", root, typeof(Image));
+            GameObject alphaBackground = CreateUIObject("Alpha Background", background, typeof(Image));
             GameObject mask = CreateUIObject("Mask", root, typeof(Mask), typeof(Image));
             GameObject fillArea = CreateUIObject("Fill Area", mask, typeof(RectTransform));
             GameObject fill = CreateUIObject("Fill", fillArea, typeof(Image));
@@ -543,7 +550,7 @@ namespace JetXR.VisionUI
             backgroundImage.sprite = resources.smallSliderBackground;
             backgroundImage.material = resources.darkElementMaterial;
             backgroundImage.type = Image.Type.Sliced;
-            backgroundImage.color = new Color(1, 1, 1, 0);
+            backgroundImage.color = s_WindowElementColor;
             backgroundImage.pixelsPerUnitMultiplier = 4;
             backgroundImage.raycastPadding = new Vector4(0, -22, 0, -22);
 
@@ -552,9 +559,7 @@ namespace JetXR.VisionUI
             backgroundRect.anchorMax = new Vector2(1, 1f);
             backgroundRect.sizeDelta = new Vector2(0, 0);
 
-            // Canvas Renderer
-            CanvasRenderer canvasRenderer = background.GetComponent<CanvasRenderer>();
-            canvasRenderer.cullTransparentMesh = false;
+            SetupWindowElement(background, alphaBackground, resources);
 
             // Mask
             Image maskImage = mask.GetComponent<Image>();
@@ -655,7 +660,6 @@ namespace JetXR.VisionUI
             Animator animator = root.GetComponent<Animator>();
             SetAnimatorController(animator, resources.smallSliderAnimatorController);
 
-
             return root;
         }
 
@@ -665,6 +669,7 @@ namespace JetXR.VisionUI
             GameObject root = CreateUIElementRoot("Regular Slider", new Vector2(288f, 28f), typeof(Slider), typeof(Animator));
 
             GameObject background = CreateUIObject("Background", root, typeof(Image));
+            GameObject alphaBackground = CreateUIObject("Alpha Background", background, typeof(Image));
             GameObject mask = CreateUIObject("Mask", root, typeof(Mask), typeof(Image));
             GameObject fillArea = CreateUIObject("Fill Area", mask, typeof(RectTransform));
             GameObject fill = CreateUIObject("Fill", fillArea, typeof(Image));
@@ -680,7 +685,7 @@ namespace JetXR.VisionUI
             backgroundImage.sprite = resources.regularSliderBackground;
             backgroundImage.material = resources.darkElementMaterial;
             backgroundImage.type = Image.Type.Sliced;
-            backgroundImage.color = new Color(1, 1, 1, 0);
+            backgroundImage.color = s_WindowElementColor;
             backgroundImage.pixelsPerUnitMultiplier = 4;
             backgroundImage.raycastPadding = new Vector4(0, -16, 0, -16);
 
@@ -689,9 +694,7 @@ namespace JetXR.VisionUI
             backgroundRect.anchorMax = new Vector2(1, 1);
             backgroundRect.sizeDelta = new Vector2(0, 0);
 
-            // Canvas Renderer
-            CanvasRenderer canvasRenderer = background.GetComponent<CanvasRenderer>();
-            canvasRenderer.cullTransparentMesh = false;
+            SetupWindowElement(background, alphaBackground, resources);
 
             // Mask
             Image maskImage = mask.GetComponent<Image>();
@@ -825,84 +828,14 @@ namespace JetXR.VisionUI
             return root;
         }
 
-        // List Element
-        public static GameObject CreateListElement(Resources resources)
-        {
-            GameObject root = CreateUIElementRoot("List Element", new Vector2(460f, 60f), typeof(Image), typeof(Button), typeof(Animator));
-
-            GameObject highlight = CreateUIObject("Highlight", root, typeof(Image));
-            GameObject text = CreateUIObject("Text", root, typeof(TextMeshProUGUI));
-            GameObject arrow = CreateUIObject("Arrow", root, typeof(Image));
-
-            // Animation
-            Button button = root.GetComponent<Button>();
-            button.transition = Selectable.Transition.Animation;
-
-            Navigation navigation = button.navigation;
-            navigation.mode = Navigation.Mode.Automatic;
-            button.navigation = navigation;
-
-            Animator animator = root.GetComponent<Animator>();
-            SetAnimatorController(animator, resources.listElementAnimatorController);
-
-            // Background
-            Image background = root.GetComponent<Image>();
-            background.sprite = resources.roundedRectBackground;
-            background.material = resources.lightElementMaterial;
-            background.color = new Color(1, 1, 1, 0);
-            background.type = Image.Type.Sliced;
-            background.pixelsPerUnitMultiplier = 4;
-
-            // Background Sprite
-            ListElement backgroundSprite = root.AddComponent<ListElement>();
-            backgroundSprite.SetReferences(background, resources.singleListElement, resources.firstListElement, resources.middleListElement, resources.lastListElement);
-
-            // Highlight
-            Image highlightImage = highlight.GetComponent<Image>();
-            highlightImage.sprite = resources.listElementHighlight;
-            highlightImage.color = new Color(1f, 1f, 1f, 0f);
-
-            RectTransform highlightRect = highlight.GetComponent<RectTransform>();
-            highlightRect.anchorMin = new Vector2(0, 0);
-            highlightRect.anchorMax = new Vector2(1, 1);
-            highlightRect.sizeDelta = new Vector2(0, 0);
-
-            // Text
-            TextMeshProUGUI textTMP = text.GetComponent<TextMeshProUGUI>();
-            textTMP.text = "Title";
-            textTMP.horizontalAlignment = HorizontalAlignmentOptions.Left;
-            textTMP.verticalAlignment = VerticalAlignmentOptions.Middle;
-            textTMP.font = resources.fontSemibold;
-            textTMP.fontSize = 17;
-            textTMP.overflowMode = TextOverflowModes.Ellipsis;
-            textTMP.enableWordWrapping = false;
-
-            RectTransform textRect = text.GetComponent<RectTransform>();
-            textRect.anchorMin = new Vector2(0, 0);
-            textRect.anchorMax = new Vector2(1, 1);
-            textRect.anchoredPosition = new Vector2(-9.5f, 0);
-            textRect.sizeDelta = new Vector2(-59f, 0);
-
-            // Arrow
-            Image arrowImage = arrow.GetComponent<Image>();
-            arrowImage.sprite = resources.listElementArrow;
-            arrowImage.color = new Color(1, 1, 1, 0.25f);
-
-            RectTransform arrowRect = arrow.GetComponent<RectTransform>();
-            arrowRect.anchorMin = new Vector2(1, 0.5f);
-            arrowRect.anchorMax = new Vector2(1, 0.5f);
-            arrowRect.anchoredPosition = new Vector2(-25.5f, 0);
-            arrowRect.sizeDelta = new Vector2(11f, 44f);
-
-            return root;
-        }
-
         // Window
         public static GameObject CreateWindow(Resources resources)
         {
             GameObject root = CreateUIElementRoot("Window", new Vector2(1306f, 734f), typeof(Image));
 
             GameObject shadow = CreateUIObject("Shadow", root, typeof(Image));
+            GameObject windowBottom = CreateUIObject("Window Bottom", root, typeof(RectTransform));
+            GameObject floorShadow = CreateUIObject("Floor Shadow", windowBottom, typeof(Image), typeof(ShadowPlacer));
 
             // Background
             Image background = root.GetComponent<Image>();
@@ -924,123 +857,21 @@ namespace JetXR.VisionUI
             shadowRect.anchorMax = Vector2.one;
             shadowRect.sizeDelta = new Vector2(16, 16);
 
-            //Window Controls
-            GameObject windowControls = CreateUIObject("Window Controls", root, typeof(RectTransform));
-            GameObject closeButtonWindow = CreateUIObject("Close Button Window", windowControls, typeof(Image), typeof(Button), typeof(Animator));
-            GameObject grabberObjectWindow = CreateUIObject("Grabber Window", windowControls, typeof(Image), typeof(Button), typeof(Animator));
-            GameObject closeButton = CreateUIObject("Close Button", closeButtonWindow, typeof(Image));
-            GameObject crossIcon = CreateUIObject("Cross Icon", closeButtonWindow, typeof(Image));
-            GameObject grabberObject = CreateUIObject("Grabber", grabberObjectWindow, typeof(Image), typeof(BoxCollider), typeof(XRSimpleInteractable), typeof(Grabber));
+            // Window Bottom
+            RectTransform windowBottomRect = windowBottom.GetComponent<RectTransform>();
+            SetupRect(windowBottomRect, Vector2.zero, new Vector2(1, 0), Vector2.zero, new Vector2(0, 0));
 
-            RectTransform windowControlsRect = windowControls.GetComponent<RectTransform>();
-            windowControlsRect.anchorMin = new Vector2(0.5f, 0);
-            windowControlsRect.anchorMax = new Vector2(0.5f, 0);
-            windowControlsRect.pivot = new Vector2(0.5f, 1);
-            windowControlsRect.sizeDelta = new Vector2(174, 14);
-            windowControlsRect.anchoredPosition = new Vector2(0, -22);
+            // Floor Shadow
+            Image floorShadowImage = floorShadow.GetComponent<Image>();
+            floorShadowImage.sprite = resources.windowFloorShadow;
+            floorShadowImage.color = Color.black;
+            floorShadowImage.type = Image.Type.Sliced;
+            floorShadowImage.pixelsPerUnitMultiplier = 12;
+            floorShadowImage.raycastTarget = false;
 
-            //Close Button Window
-            RectTransform closeButtonWindowRect = closeButtonWindow.GetComponent<RectTransform>();
-            closeButtonWindowRect.anchorMin = new Vector2(0, 0.5f);
-            closeButtonWindowRect.anchorMax = new Vector2(0, 0.5f);
-            closeButtonWindowRect.sizeDelta = new Vector2(14, 14);
-            closeButtonWindowRect.anchoredPosition = new Vector2(7, 0);
-
-            Button closeButtonWindowButton = closeButtonWindow.GetComponent<Button>();
-            closeButtonWindowButton.transition = Selectable.Transition.Animation;
-
-            Navigation closeButtonWindowNavigation = closeButtonWindowButton.navigation;
-            closeButtonWindowNavigation.mode = Navigation.Mode.None;
-            closeButtonWindowButton.navigation = closeButtonWindowNavigation;
-
-            Animator closeButtonWindowAnimator = closeButtonWindow.GetComponent<Animator>();
-            SetAnimatorController(closeButtonWindowAnimator, resources.closeButtonController);
-
-            Image closeButtonWindowImage = closeButtonWindow.GetComponent<Image>();
-            closeButtonWindowImage.sprite = resources.buttonBackground;
-            closeButtonWindowImage.material = resources.toolbarBlurredOverlayMaterial;
-            closeButtonWindowImage.type = Image.Type.Sliced;
-            closeButtonWindowImage.pixelsPerUnitMultiplier = 1;
-            closeButtonWindowImage.color = new Color(1, 1, 1, 1);
-            closeButtonWindowImage.raycastPadding = new Vector4(-23, -23, -23, -23);
-
-            //Grabber Window
-            RectTransform grabberWindowRect = grabberObjectWindow.GetComponent<RectTransform>();
-            grabberWindowRect.anchorMin = new Vector2(1, 0.5f);
-            grabberWindowRect.anchorMax = new Vector2(1, 0.5f);
-            grabberWindowRect.sizeDelta = new Vector2(136, 10);
-            grabberWindowRect.anchoredPosition = new Vector2(-68, 0);
-
-            Button grabberWindowButton = grabberObjectWindow.GetComponent<Button>();
-            grabberWindowButton.transition = Selectable.Transition.Animation;
-
-            Navigation grabberWindowNavigation = grabberWindowButton.navigation;
-            grabberWindowNavigation.mode = Navigation.Mode.None;
-            grabberWindowButton.navigation = grabberWindowNavigation;
-
-            Animator grabberWindowAnimator = grabberObjectWindow.GetComponent<Animator>();
-            SetAnimatorController(grabberWindowAnimator, resources.grabberController);
-
-            Image grabberWindowImage = grabberObjectWindow.GetComponent<Image>();
-            grabberWindowImage.sprite = resources.buttonBackground;
-            grabberWindowImage.material = resources.toolbarBlurredOverlayMaterial;
-            grabberWindowImage.type = Image.Type.Sliced;
-            grabberWindowImage.pixelsPerUnitMultiplier = 17.6f;
-            grabberWindowImage.color = new Color(1, 1, 1, 1);
-            grabberWindowImage.raycastPadding = new Vector4(0, -25, 0, -25);
-
-            //Close Button
-            RectTransform closeButtonRect = closeButton.GetComponent<RectTransform>();
-            closeButtonRect.anchorMin = new Vector2(0, 0);
-            closeButtonRect.anchorMax = new Vector2(1, 1);
-            closeButtonRect.sizeDelta = new Vector2(0, 0);
-            closeButtonRect.anchoredPosition = new Vector2(0, 0);
-
-            Image closeButtonImage = closeButton.GetComponent<Image>();
-            closeButtonImage.sprite = resources.buttonBackground;
-            closeButtonImage.material = resources.lightElementMaterial;
-            closeButtonImage.type = Image.Type.Sliced;
-            closeButtonImage.pixelsPerUnitMultiplier = 1;
-            closeButtonImage.color = new Color(1, 1, 1, 0);
-
-            CanvasRenderer closeButtonCanvasRenderer = closeButton.GetComponent<CanvasRenderer>();
-            closeButtonCanvasRenderer.cullTransparentMesh = false;
-
-            //Cross Icon
-            RectTransform crossIconRect = crossIcon.GetComponent<RectTransform>();
-            crossIconRect.anchorMin = new Vector2(0, 0);
-            crossIconRect.anchorMax = new Vector2(1, 1);
-            crossIconRect.sizeDelta = new Vector2(0, 0);
-            crossIconRect.anchoredPosition = new Vector2(0, 0);
-
-            Image crossIconImage = crossIcon.GetComponent<Image>();
-            crossIconImage.sprite = resources.crossIcon;
-            crossIconImage.color = new Color(0, 0, 0, 1);
-
-            crossIcon.SetActive(false);
-
-            //Grabber
-            RectTransform grabberRect = grabberObject.GetComponent<RectTransform>();
-            grabberRect.anchorMin = new Vector2(0, 0);
-            grabberRect.anchorMax = new Vector2(1, 1);
-            grabberRect.sizeDelta = new Vector2(0, 0);
-            grabberRect.anchoredPosition = new Vector2(0, 0);
-
-            Image grabberImage = grabberObject.GetComponent<Image>();
-            grabberImage.sprite = resources.buttonBackground;
-            grabberImage.material = resources.lightElementMaterial;
-            grabberImage.type = Image.Type.Sliced;
-            grabberImage.pixelsPerUnitMultiplier = 18;
-            grabberImage.color = new Color(1, 1, 1, 0);
-
-            CanvasRenderer grabberObjectCanvasRenderer = grabberObject.GetComponent<CanvasRenderer>();
-            grabberObjectCanvasRenderer.cullTransparentMesh = false;
-
-            BoxCollider grabberCollider = grabberObject.GetComponent<BoxCollider>();
-            grabberCollider.size = new Vector3(136, 10, 1);
-
-            Grabber grabber = grabberObject.GetComponent<Grabber>();
-            grabber.SetReferences(root.transform);
+            RectTransform floorShadowRect = floorShadow.GetComponent<RectTransform>();
+            SetupRect(floorShadowRect, Vector2.zero, new Vector2(1, 0), new Vector2(0, 100), new Vector2(0, -114));
+            floorShadowRect.eulerAngles = new Vector3(90, -0, 0);
 
             return root;
         }
@@ -1051,6 +882,7 @@ namespace JetXR.VisionUI
             GameObject root = CreateUIElementRoot("Toggle", new Vector2(56f, 32f), typeof(Toggle), typeof(Animator), typeof(ToggleAnimation));
 
             GameObject background = CreateUIObject("Background", root, typeof(Image));
+            GameObject alphaBackground = CreateUIObject("Alpha Background", background, typeof(Image));
             GameObject foreground = CreateUIObject("Foreground", root, typeof(Image));
             GameObject mask = CreateUIObject("Mask", root, typeof(Image), typeof(Mask));
             GameObject knobArea = CreateUIObject("Knob Area", mask, typeof(RectTransform));
@@ -1062,7 +894,7 @@ namespace JetXR.VisionUI
             Image backgroundImage = background.GetComponent<Image>();
             backgroundImage.sprite = resources.toggleBGStateOff;
             backgroundImage.material = resources.darkElementMaterial;
-            backgroundImage.color = new Color(1, 1, 1, 0);
+            backgroundImage.color = s_WindowElementColor;
             backgroundImage.raycastPadding = new Vector4(-2, -14, -2, -14);
 
             RectTransform backgroundRect = background.GetComponent<RectTransform>();
@@ -1070,9 +902,7 @@ namespace JetXR.VisionUI
             backgroundRect.anchorMax = new Vector2(1, 1);
             backgroundRect.sizeDelta = new Vector2(0, 0);
 
-            // Canvas Renderer
-            CanvasRenderer canvasRenderer = background.GetComponent<CanvasRenderer>();
-            canvasRenderer.cullTransparentMesh = false;
+            SetupWindowElement(background, alphaBackground, resources);
 
             // Foreground State ON
             Image foregroundImage = foreground.GetComponent<Image>();
@@ -1435,7 +1265,7 @@ namespace JetXR.VisionUI
             // Background
             Image background = root.GetComponent<Image>();
             background.sprite = resources.tooltip;
-            background.color = new Color(0.6705883f, 0.9411765f, 1f, 0.3019608f);
+            background.color = Color.white;
             background.type = Image.Type.Sliced;
             background.pixelsPerUnitMultiplier = 4;
             background.raycastTarget = false;
@@ -1465,25 +1295,25 @@ namespace JetXR.VisionUI
         {
             GameObject root = CreateUIElementRoot("InputField", new Vector2(305, 44), typeof(Image), typeof(TMP_InputField), typeof(Animator));
 
+            GameObject alphaBackground = CreateUIObject("Alpha Background", root, typeof(Image));
             GameObject highlight = CreateUIObject("Highlight", root, typeof(Image));
             GameObject textArea = CreateUIObject("Text Area", root, typeof(RectTransform));
             GameObject childPlaceholder = CreateUIObject("Placeholder", textArea, typeof(TextMeshProUGUI));
             GameObject childText = CreateUIObject("Text", textArea, typeof(TextMeshProUGUI));
             GameObject clearButton = CreateUIObject("Clear Button", root, typeof(Button), typeof(Image));
+            GameObject clearButtonAlphaBackground = CreateUIObject("Alpha Background", root, typeof(Image));
             GameObject clearButtonCross = CreateUIObject("Cleaar Button Cross", clearButton, typeof(Image));
 
             // Background
             Image image = root.GetComponent<Image>();
             image.sprite = resources.inputFieldBackground;
             image.material = resources.darkElementMaterial;
-            image.color = new Color(1, 1, 1, 0);
+            image.color = s_WindowElementColor;
             image.type = Image.Type.Sliced;
             image.pixelsPerUnitMultiplier = 4;
             image.raycastPadding = new Vector4(0, -8, 0, -8);
 
-            // Canvas Renderer
-            CanvasRenderer canvasRenderer = root.GetComponent<CanvasRenderer>();
-            canvasRenderer.cullTransparentMesh = false;
+            SetupWindowElement(root, alphaBackground, resources);
 
             // InputField
             TMP_InputField inputField = root.GetComponent<TMP_InputField>();
@@ -1555,18 +1385,16 @@ namespace JetXR.VisionUI
             Image clearButtonImage = clearButton.GetComponent<Image>();
             clearButtonImage.sprite = resources.inputFieldClearBackground;
             clearButtonImage.material = resources.lightElementMaterial;
-            clearButtonImage.color = new Color(1, 1, 1, 0);
+            clearButtonImage.color = s_WindowElementColor;
             clearButtonImage.raycastPadding = new Vector4(-16, -16, -16, -16);
-
-            // Canvas Renderer
-            CanvasRenderer clearButtonCanvasRenderer = clearButton.GetComponent<CanvasRenderer>();
-            clearButtonCanvasRenderer.cullTransparentMesh = false;
 
             RectTransform clearButtonRect = clearButton.GetComponent<RectTransform>();
             clearButtonRect.anchorMin = new Vector2(1, 0.5f);
             clearButtonRect.anchorMax = new Vector2(1, 0.5f);
             clearButtonRect.sizeDelta = new Vector2(28, 28);
             clearButtonRect.anchoredPosition = new Vector2(-22, 0);
+
+            SetupWindowElement(clearButton, clearButtonAlphaBackground, resources);
 
             // Clear Button Cross
             Image clearCrossImage = clearButtonCross.GetComponent<Image>();
@@ -1640,22 +1468,18 @@ namespace JetXR.VisionUI
 
             // Button 1
             GameObject button1 = CreateSymbolButtonNoPlatter(resources);
-            button1.name = "Button - Symbol";
             SetParentAndAlign(button1, root);
 
             // Button 2
             GameObject button2 = CreateSymbolButtonNoPlatter(resources);
-            button2.name = "Button - Symbol";
             SetParentAndAlign(button2, root);
 
             // Separator
             GameObject separator = CreateVerticalSeparator(resources);
-            separator.name = "Separator";
             SetParentAndAlign(separator, root);
 
             // Button 3
             GameObject button3 = CreateSymbolButtonNoPlatter(resources);
-            button3.name = "Button - Symbol";
             SetParentAndAlign(button3, root);
 
             return root;
@@ -1749,49 +1573,34 @@ namespace JetXR.VisionUI
             RectTransform separatorRect = separator.GetComponent<RectTransform>();
             separatorRect.sizeDelta = new Vector2(280, 1);
 
-            // Action Button 1
-            GameObject action1 = CreateRoundedRectButton(resources);
-            GameObject highlight1 = action1.transform.Find("Highlight").gameObject;
-            GameObject text1 = action1.transform.Find("Text").gameObject;
-            action1.name = "Action Button";
-            SetParentAndAlign(action1, root);
+            // Action Buttons
+            for (int i = 0; i < 2; i++)
+            {
+                GameObject button = CreateRoundedRectButton(resources);
+                GameObject highlight = button.transform.Find("Highlight").gameObject;
+                GameObject text = button.transform.Find("Text").gameObject;
+                button.name = "Action Button";
+                SetParentAndAlign(button, root);
 
-            RectTransform action1Rect = action1.GetComponent<RectTransform>();
-            action1Rect.sizeDelta = new Vector2(280, 44);
+                RectTransform action2Rect = button.GetComponent<RectTransform>();
+                action2Rect.sizeDelta = new Vector2(280, 44);
 
-            Animator action1Animator = action1.GetComponent<Animator>();
-            SetAnimatorController(action1Animator, resources.buttonNoPlatterAnimatorController);
-            
-            Image action1Image = action1.GetComponent<Image>();
-            action1Image.color = new Color(1f, 1f, 1f, 0f);
-            
-            Image highlight1Image = highlight1.GetComponent<Image>();
-            highlight1Image.color = new Color(1f, 1f, 1f, 0f);
+                Animator action2Animator = button.GetComponent<Animator>();
+                SetAnimatorController(action2Animator, resources.buttonNoPlatterAnimatorController);
 
-            TextMeshProUGUI text1TMP = text1.GetComponent<TextMeshProUGUI>();
-            text1TMP.text = "Action";
+                Image actionImage = button.GetComponent<Image>();
+                actionImage.color = new Color(1f, 1f, 1f, 0f);
 
-            // Action Button 2
-            GameObject action2 = CreateRoundedRectButton(resources);
-            GameObject highlight2 = action2.transform.Find("Highlight").gameObject;
-            GameObject text2 = action2.transform.Find("Text").gameObject;
-            action2.name = "Action Button";
-            SetParentAndAlign(action2, root);
+                Image highlightImage = highlight.GetComponent<Image>();
+                highlightImage.color = new Color(1f, 1f, 1f, 0f);
 
-            RectTransform action2Rect = action2.GetComponent<RectTransform>();
-            action2Rect.sizeDelta = new Vector2(280, 44);
+                TextMeshProUGUI textTMP = text.GetComponent<TextMeshProUGUI>();
+                textTMP.text = "Action";
 
-            Animator action2Animator = action2.GetComponent<Animator>();
-            SetAnimatorController(action2Animator, resources.buttonNoPlatterAnimatorController);
-
-            Image action2Image = action2.GetComponent<Image>();
-            action2Image.color = new Color(1f, 1f, 1f, 0f);
-
-            Image highlight2Image = highlight2.GetComponent<Image>();
-            highlight2Image.color = new Color(1f, 1f, 1f, 0f);
-
-            TextMeshProUGUI text2TMP = text2.GetComponent<TextMeshProUGUI>();
-            text2TMP.text = "Action";
+                GameObject alphaBackground = button.transform.Find("Alpha Background").gameObject;
+                Image alphaBackgroundImage = alphaBackground.GetComponent<Image>();
+                alphaBackgroundImage.color = new Color(1, 1, 1, 0);
+            }
 
             return root;
         }
@@ -1801,7 +1610,9 @@ namespace JetXR.VisionUI
         {
             GameObject root = CreateUIElementRoot("Toggle", new Vector2(44f, 44f), typeof(Image), typeof(Toggle), typeof(Animator), typeof(ToggleAnimation));
 
+            GameObject alphaBackground = CreateUIObject("Alpha Background", root, typeof(Image));
             GameObject highlight = CreateUIObject("Highlight", root, typeof(Image));
+            GameObject highlightAlphaBackground = CreateUIObject("Alpha Background", highlight, typeof(Image));
             GameObject text = CreateUIObject("Text", root, typeof(TextMeshProUGUI));
             GameObject symbol = CreateUIObject("Symbol", root, typeof(Image));
 
@@ -1819,19 +1630,17 @@ namespace JetXR.VisionUI
             // Image
             Image toggleImage = root.GetComponent<Image>();
             toggleImage.sprite = resources.buttonBackground;
-            toggleImage.color = new Color(1, 1, 1, 0);
+            toggleImage.color = s_WindowElementColor;
             toggleImage.material = resources.lightElementMaterial;
             toggleImage.type = Image.Type.Sliced;
             toggleImage.pixelsPerUnitMultiplier = 4;
             toggleImage.raycastPadding = new Vector4(-8, -8, -8, -8);
 
-            // Canvas Renderer
-            CanvasRenderer canvasRenderer = root.GetComponent<CanvasRenderer>();
-            canvasRenderer.cullTransparentMesh = false;
+            SetupWindowElement(root, alphaBackground, resources);
 
             // Highlight
             Image highlightImage = highlight.GetComponent<Image>();
-            highlightImage.sprite = resources.tabbarToggleHighlight;
+            highlightImage.sprite = resources.symbolHighlight;
             highlightImage.material = resources.lightElementMaterial;
             highlightImage.color = new Color(1f, 1f, 1f, 0f);
             highlightImage.type = Image.Type.Sliced;
@@ -1842,6 +1651,8 @@ namespace JetXR.VisionUI
             highlightRect.anchorMin = new Vector2(0, 0f);
             highlightRect.anchorMax = new Vector2(1, 1f);
             highlightRect.sizeDelta = new Vector2(0, 0);
+
+            SetupWindowElement(highlight, highlightAlphaBackground, resources);
 
             // Text
             TextMeshProUGUI textTMP = text.GetComponent<TextMeshProUGUI>();
@@ -1880,8 +1691,7 @@ namespace JetXR.VisionUI
         //Tabbar
         public static GameObject CreateTabbar(Resources resources)
         {
-            GameObject root = CreateUIElementRoot("Tabbar", new Vector2(68, 120), typeof(VerticalLayoutGroup), typeof(ContentSizeFitter), typeof(LayoutElement),
-                typeof(ToggleGroup), typeof(UpdateChildTogglesOnAwake), typeof(TabbarAnimation));
+            GameObject root = CreateUIElementRoot("Tabbar", new Vector2(68, 120), typeof(VerticalLayoutGroup), typeof(ToggleGroup), typeof(UpdateChildTogglesOnAwake), typeof(TabbarAnimation));
 
             GameObject shadow = CreateUIObject("Shadow", root, typeof(Image), typeof(LayoutElement));
             GameObject background = CreateUIObject("Background", root, typeof(Image), typeof(LayoutElement));
@@ -1911,12 +1721,6 @@ namespace JetXR.VisionUI
             tabbarLayout.childControlWidth = true;
             tabbarLayout.spacing = 8;
             tabbarLayout.padding = new RectOffset(12, 12, 12, 12);
-
-            ContentSizeFitter tabbarSizeFilter = root.GetComponent<ContentSizeFitter>();
-            tabbarSizeFilter.verticalFit = ContentSizeFitter.FitMode.MinSize;
-
-            LayoutElement tabbarLayoutElement = root.GetComponent<LayoutElement>();
-            tabbarLayoutElement.preferredWidth = 268;
 
             TabbarAnimation tabbarAnimation = root.GetComponent<TabbarAnimation>();
             tabbarAnimation.SetReferences(shadowImage);
@@ -1975,6 +1779,7 @@ namespace JetXR.VisionUI
             GameObject root = CreateUIElementRoot("Progress Bar", new Vector2(500f, 10f), typeof(ProgressBar));
 
             GameObject background = CreateUIObject("Background", root, typeof(Image));
+            GameObject alphaBackground = CreateUIObject("Alpha Background", root, typeof(Image));
             GameObject fillArea = CreateUIObject("Fill Area", root, typeof(RectTransform));
             GameObject fill = CreateUIObject("Fill", fillArea, typeof(Image));
 
@@ -1986,13 +1791,11 @@ namespace JetXR.VisionUI
             Image backgroundImage = background.GetComponent<Image>();
             backgroundImage.sprite = resources.regularSliderBackground;
             backgroundImage.material = resources.darkElementMaterial;
-            backgroundImage.color = new Color(1, 1, 1, 0);
+            backgroundImage.color = s_WindowElementColor;
             backgroundImage.type = Image.Type.Sliced;
             backgroundImage.pixelsPerUnitMultiplier = 11;
 
-            // Canvas Renderer
-            CanvasRenderer clearButtonCanvasRenderer = background.GetComponent<CanvasRenderer>();
-            clearButtonCanvasRenderer.cullTransparentMesh = false;
+            SetupWindowElement(background, alphaBackground, resources);
 
             RectTransform fillAreaRect = fillArea.GetComponent<RectTransform>();
             fillAreaRect.anchorMin = new Vector2(0, 0);
@@ -2032,19 +1835,416 @@ namespace JetXR.VisionUI
         {
             GameObject root = CreateUIElementRoot("Sidebar", new Vector2(362, -6), typeof(Image));
 
+            GameObject alphaBackground = CreateUIObject("Alpha Background", root, typeof(Image));
+
             Image Image = root.GetComponent<Image>();
             Image.sprite = resources.sidebar;
             Image.material = resources.darkElementMaterial;
-            Image.color = new Color(1, 1, 1, 0);
+            Image.color = s_WindowElementColor;
             Image.type = Image.Type.Sliced;
             Image.pixelsPerUnitMultiplier = 2;
             Image.raycastTarget = false;
 
-            // Canvas Renderer
-            CanvasRenderer canvasRenderer = root.GetComponent<CanvasRenderer>();
-            canvasRenderer.cullTransparentMesh = false;
+            SetupWindowElement(root, alphaBackground, resources);
 
             return root;
         }
+
+        public static GameObject CreateWindowsStacker(Resources resources)
+        {
+            GameObject root = CreateUIElementRoot("Windows Stacker", new Vector2(1306f, 734f), typeof(RectTransform), typeof(WindowsStacker));
+
+            var windowControls = CreateWindowControls(resources);
+            SetParentAndAlign(windowControls, root);
+
+            RectTransform windowControlsRect = windowControls.GetComponent<RectTransform>();
+            windowControlsRect.anchorMin = new Vector2(0.5f, 0);
+            windowControlsRect.anchorMax = new Vector2(0.5f, 0);
+            windowControlsRect.pivot = new Vector2(0.5f, 1);
+            windowControlsRect.sizeDelta = new Vector2(174, 14);
+            windowControlsRect.anchoredPosition = new Vector2(0, -22);
+
+            Grabber grabber = windowControls.GetComponentInChildren<Grabber>();
+            grabber.SetReferences(root.transform);
+
+            GameObject window = CreateWindow(resources);
+            SetParentAndAlign(window, root);
+
+            WindowsStacker windowsStacker = root.GetComponent<WindowsStacker>();
+            windowsStacker.SetReferences(window);
+
+            return root;
+        }
+
+        public static GameObject CreateWindowControls(Resources resources)
+        {
+            //Window Controls
+            GameObject root = CreateUIElementRoot("Window Controls", new Vector2(174, 14), typeof(RectTransform));
+            GameObject closeButtonWindow = CreateUIObject("Close Button Window", root, typeof(Image), typeof(Button), typeof(Animator));
+            GameObject grabberObjectWindow = CreateUIObject("Grabber Window", root, typeof(Image), typeof(Button), typeof(Animator));
+            GameObject closeButton = CreateUIObject("Close Button", closeButtonWindow, typeof(Image));
+            GameObject closeButtonAlphaBackground = CreateUIObject("Alpha Background", closeButtonWindow, typeof(Image));
+            GameObject crossIcon = CreateUIObject("Cross Icon", closeButtonWindow, typeof(Image));
+            GameObject grabberObject = CreateUIObject("Grabber", grabberObjectWindow, typeof(Image), typeof(BoxCollider), typeof(XRSimpleInteractable), typeof(Grabber));
+            GameObject grabberAlphaBackground = CreateUIObject("Alpha Background", grabberObjectWindow, typeof(Image));
+
+            RectTransform windowControlsRect = root.GetComponent<RectTransform>();
+            windowControlsRect.anchorMin = new Vector2(0.5f, 0);
+            windowControlsRect.anchorMax = new Vector2(0.5f, 0);
+            windowControlsRect.pivot = new Vector2(0.5f, 1);
+            windowControlsRect.sizeDelta = new Vector2(174, 14);
+            windowControlsRect.anchoredPosition = new Vector2(0, -22);
+
+            //Close Button Window
+            RectTransform closeButtonWindowRect = closeButtonWindow.GetComponent<RectTransform>();
+            closeButtonWindowRect.anchorMin = new Vector2(0, 0.5f);
+            closeButtonWindowRect.anchorMax = new Vector2(0, 0.5f);
+            closeButtonWindowRect.sizeDelta = new Vector2(14, 14);
+            closeButtonWindowRect.anchoredPosition = new Vector2(7, 0);
+
+            Button closeButtonWindowButton = closeButtonWindow.GetComponent<Button>();
+            closeButtonWindowButton.transition = Selectable.Transition.Animation;
+
+            Navigation closeButtonWindowNavigation = closeButtonWindowButton.navigation;
+            closeButtonWindowNavigation.mode = Navigation.Mode.None;
+            closeButtonWindowButton.navigation = closeButtonWindowNavigation;
+
+            Animator closeButtonWindowAnimator = closeButtonWindow.GetComponent<Animator>();
+            SetAnimatorController(closeButtonWindowAnimator, resources.closeButtonController);
+
+            Image closeButtonWindowImage = closeButtonWindow.GetComponent<Image>();
+            closeButtonWindowImage.sprite = resources.buttonBackground;
+            closeButtonWindowImage.material = resources.toolbarBlurredOverlayMaterial;
+            closeButtonWindowImage.type = Image.Type.Sliced;
+            closeButtonWindowImage.pixelsPerUnitMultiplier = 1;
+            closeButtonWindowImage.color = new Color(1, 1, 1, 1);
+            closeButtonWindowImage.raycastPadding = new Vector4(-23, -23, -23, -23);
+
+            //Grabber Window
+            RectTransform grabberWindowRect = grabberObjectWindow.GetComponent<RectTransform>();
+            grabberWindowRect.anchorMin = new Vector2(1, 0.5f);
+            grabberWindowRect.anchorMax = new Vector2(1, 0.5f);
+            grabberWindowRect.sizeDelta = new Vector2(136, 10);
+            grabberWindowRect.anchoredPosition = new Vector2(-68, 0);
+
+            Button grabberWindowButton = grabberObjectWindow.GetComponent<Button>();
+            grabberWindowButton.transition = Selectable.Transition.Animation;
+
+            Navigation grabberWindowNavigation = grabberWindowButton.navigation;
+            grabberWindowNavigation.mode = Navigation.Mode.None;
+            grabberWindowButton.navigation = grabberWindowNavigation;
+
+            Animator grabberWindowAnimator = grabberObjectWindow.GetComponent<Animator>();
+            SetAnimatorController(grabberWindowAnimator, resources.grabberController);
+
+            Image grabberWindowImage = grabberObjectWindow.GetComponent<Image>();
+            grabberWindowImage.sprite = resources.buttonBackground;
+            grabberWindowImage.material = resources.toolbarBlurredOverlayMaterial;
+            grabberWindowImage.type = Image.Type.Sliced;
+            grabberWindowImage.pixelsPerUnitMultiplier = 17.6f;
+            grabberWindowImage.color = new Color(1, 1, 1, 1);
+            grabberWindowImage.raycastPadding = new Vector4(0, -25, 0, -25);
+
+            //Close Button
+            RectTransform closeButtonRect = closeButton.GetComponent<RectTransform>();
+            closeButtonRect.anchorMin = new Vector2(0, 0);
+            closeButtonRect.anchorMax = new Vector2(1, 1);
+            closeButtonRect.sizeDelta = new Vector2(0, 0);
+            closeButtonRect.anchoredPosition = new Vector2(0, 0);
+
+            Image closeButtonImage = closeButton.GetComponent<Image>();
+            closeButtonImage.sprite = resources.buttonBackground;
+            closeButtonImage.material = resources.lightElementMaterial;
+            closeButtonImage.type = Image.Type.Sliced;
+            closeButtonImage.pixelsPerUnitMultiplier = 1;
+            closeButtonImage.color = s_WindowElementColor;
+            closeButtonImage.raycastPadding = new Vector4(-23, -23, -23, -23);
+
+            SetupWindowElement(closeButton, closeButtonAlphaBackground, resources);
+
+            //Cross Icon
+            RectTransform crossIconRect = crossIcon.GetComponent<RectTransform>();
+            crossIconRect.anchorMin = new Vector2(0, 0);
+            crossIconRect.anchorMax = new Vector2(1, 1);
+            crossIconRect.sizeDelta = new Vector2(0, 0);
+            crossIconRect.anchoredPosition = new Vector2(0, 0);
+
+            Image crossIconImage = crossIcon.GetComponent<Image>();
+            crossIconImage.sprite = resources.crossIcon;
+            crossIconImage.color = new Color(0, 0, 0, 1);
+            crossIconImage.raycastTarget = false;
+
+            crossIcon.SetActive(false);
+
+            //Grabber
+            RectTransform grabberRect = grabberObject.GetComponent<RectTransform>();
+            grabberRect.anchorMin = new Vector2(0, 0);
+            grabberRect.anchorMax = new Vector2(1, 1);
+            grabberRect.sizeDelta = new Vector2(0, 0);
+            grabberRect.anchoredPosition = new Vector2(0, 0);
+
+            Image grabberImage = grabberObject.GetComponent<Image>();
+            grabberImage.sprite = resources.buttonBackground;
+            grabberImage.material = resources.lightElementMaterial;
+            grabberImage.type = Image.Type.Sliced;
+            grabberImage.pixelsPerUnitMultiplier = 18;
+            grabberImage.color = s_WindowElementColor;
+            grabberImage.raycastPadding = new Vector4(0, -25, 0, -25);
+
+            BoxCollider grabberCollider = grabberObject.GetComponent<BoxCollider>();
+            grabberCollider.size = new Vector3(136, 60, 1);
+
+            SetupWindowElement(grabberObject, grabberAlphaBackground, resources);
+
+            return root;
+        }
+
+        // Segmented Control
+        public static GameObject CreateSegmentedControl(Resources resources)
+        {
+            GameObject root = CreateUIElementRoot("Segmented Control", new Vector2(188, 44), typeof(Image), typeof(HorizontalLayoutGroup), typeof(ToggleGroup));
+
+            GameObject alphaBackground = CreateUIObject("Alpha Background", root, typeof(Image));
+
+            Image segmentedControlImage = root.GetComponent<Image>();
+            SetupImage(segmentedControlImage, resources.buttonBackground, s_WindowElementColor, resources.darkElementMaterial, false, Vector4.zero, true, Image.Type.Sliced, true, 4);
+
+            HorizontalLayoutGroup segmentedControlHorizontalLayoutGroup = root.GetComponent<HorizontalLayoutGroup>();
+            SetupLayoutGroup(segmentedControlHorizontalLayoutGroup, new RectOffset(4, 4, 4, 4), 4, TextAnchor.MiddleCenter, true, true, false, false, true, true);
+
+            ToggleGroup segmentedControlToggleGroup = root.GetComponent<ToggleGroup>();
+
+            SetupWindowElement(root, alphaBackground, resources);
+
+            for (int i = 0; i < 2; i++)
+            {
+                GameObject toggleObject = CreateUIObject("Toggle", root, typeof(Image), typeof(Toggle), typeof(Animator), typeof(ToggleAnimation));
+                GameObject toggleAlphaBackground = CreateUIObject("Alpha Background", toggleObject, typeof(Image));
+                GameObject highlight = CreateUIObject("Highlight", toggleObject, typeof(Image));
+                GameObject title = CreateUIObject("Title", toggleObject, typeof(HorizontalLayoutGroup));
+                GameObject text = CreateUIObject("Text", title, typeof(TextMeshProUGUI));
+
+                // Toggle
+
+                Image toggleImage = toggleObject.GetComponent<Image>();
+                SetupImage(toggleImage, resources.buttonBackground, s_WindowElementColor, resources.lightElementWithFrameMaterial, true, Vector4.zero, true, Image.Type.Sliced, true, 4.888889f);
+
+                Toggle toggle = toggleObject.GetComponent<Toggle>();
+                SetupToggle(toggle, Selectable.Transition.Animation, Navigation.Mode.None, i == 0, toggleImage, segmentedControlToggleGroup);
+
+                Animator animator = toggleObject.GetComponent<Animator>();
+                SetAnimatorController(animator, resources.tabbarToggleController);
+
+                SetupWindowElement(toggleObject, toggleAlphaBackground, resources);
+
+                // Highlight
+                RectTransform highlightRect = highlight.GetComponent<RectTransform>();
+                SetupRect(highlightRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+
+                Image highlightImage = highlight.GetComponent<Image>();
+                SetupImage(highlightImage, resources.segmentedControlHighlight, new Color(1, 1, 1, 0), null, true, Vector4.zero, true, Image.Type.Sliced, true, 4f);
+
+                // Title
+                RectTransform titleRect = title.GetComponent<RectTransform>();
+                SetupRect(titleRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+
+                HorizontalLayoutGroup titleHorizontalLayoutGroup = title.GetComponent<HorizontalLayoutGroup>();
+                SetupLayoutGroup(titleHorizontalLayoutGroup, new RectOffset(0, 0, 0, 0), 0, TextAnchor.MiddleCenter, false, false, false, false, false, false);
+
+                // Text
+                RectTransform textRect = text.GetComponent<RectTransform>();
+                textRect.sizeDelta = new Vector2(41, 36);
+
+                TextMeshProUGUI textTMP = text.GetComponent<TextMeshProUGUI>();
+                SetupTextMeshProUGUI(textTMP, "Label", resources.fontSemibold, 15, s_TextColorPrimary, HorizontalAlignmentOptions.Center, VerticalAlignmentOptions.Middle, false, TextOverflowModes.Ellipsis);
+            }
+
+            return root;
+        }
+
+        #region List
+        //Completed List
+        public static GameObject CreateCompletedList(Resources resources)
+        {
+            GameObject root = CreateUIElementRoot("Completed List", new Vector2(0f, 298f), typeof(VerticalLayoutGroup));
+
+            VerticalLayoutGroup completedListRectVerticalLayoutGroup = root.GetComponent<VerticalLayoutGroup>();
+            SetupLayoutGroup(completedListRectVerticalLayoutGroup, new RectOffset(12, 12, 0, 0), 0, TextAnchor.UpperLeft, true, false, false, false, true, true);
+
+            GameObject headerText = CreateUIObject("Header Text", root, typeof(TextMeshProUGUI));
+
+            RectTransform headerTextRect = headerText.GetComponent<RectTransform>();
+            headerTextRect.sizeDelta = new Vector2(0, 32);
+
+            TextMeshProUGUI headerTextTMP = headerText.GetComponent<TextMeshProUGUI>();
+            SetupTextMeshProUGUI(headerTextTMP, "Header Text", resources.fontBold, 19, s_TextColorPrimary, HorizontalAlignmentOptions.Left, VerticalAlignmentOptions.Top, false, TextOverflowModes.Ellipsis);
+            headerTextTMP.margin = new Vector4(20, 0, 20, 8);
+
+            for (int i = 0; i < 4; i++)
+            {
+                GameObject listElement = CreateListElement(resources);
+                SetParentAndAlign(listElement, root);
+            }
+
+            GameObject footerText = CreateUIObject("Footer Text", root, typeof(TextMeshProUGUI));
+
+            RectTransform footerTextRect = footerText.GetComponent<RectTransform>();
+            footerTextRect.sizeDelta = new Vector2(0, 26);
+
+            TextMeshProUGUI footerTextTMP = footerText.GetComponent<TextMeshProUGUI>();
+            SetupTextMeshProUGUI(footerTextTMP, "Footer Text", resources.fontMedium, 13, s_TextColorSecondary, HorizontalAlignmentOptions.Left, VerticalAlignmentOptions.Top, false, TextOverflowModes.Ellipsis);
+            footerTextTMP.margin = new Vector4(20, 8, 20, 0);
+
+            return root;
+        }
+
+        // List Element
+        public static GameObject CreateListElement(Resources resources)
+        {
+            GameObject root = CreateUIElementRoot("List Element", new Vector2(460f, 60f), typeof(Image), typeof(Button), typeof(Animator));
+
+            GameObject alphaBackground = CreateUIObject("Alpha Background", root, typeof(Image));
+            GameObject highlight = CreateUIObject("Highlight", root, typeof(Image));
+            GameObject text = CreateUIObject("Text", root, typeof(TextMeshProUGUI));
+            GameObject arrow = CreateUIObject("Arrow", root, typeof(Image));
+
+            Button button = root.GetComponent<Button>();
+            button.transition = Selectable.Transition.Animation;
+
+            Navigation navigation = button.navigation;
+            navigation.mode = Navigation.Mode.Automatic;
+            button.navigation = navigation;
+
+            Animator animator = root.GetComponent<Animator>();
+            SetAnimatorController(animator, resources.listElementAnimatorController);
+
+            Image background = root.GetComponent<Image>();
+            SetupImage(background, resources.roundedRectBackground, s_WindowElementColor, resources.darkElementMaterial, true, Vector4.zero, true, Image.Type.Sliced, true, 4);
+
+            ListElement listElement = root.AddComponent<ListElement>();
+            listElement.SetReferences(background, resources.singleListElement, resources.firstListElement, resources.middleListElement, resources.lastListElement,
+                new List<Image> {
+                    alphaBackground.GetComponent<Image>()
+                });
+
+            SetupWindowElement(root, alphaBackground, resources);
+
+            // Highlight
+            Image highlightImage = highlight.GetComponent<Image>();
+            highlightImage.sprite = resources.listElementHighlight;
+            highlightImage.color = new Color(1f, 1f, 1f, 0f);
+
+            RectTransform highlightRect = highlight.GetComponent<RectTransform>();
+            SetupRect(highlightRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+
+            // Text
+            TextMeshProUGUI textTMP = text.GetComponent<TextMeshProUGUI>();
+            SetupTextMeshProUGUI(textTMP, "Title", resources.fontMedium, 17, s_TextColorPrimary, HorizontalAlignmentOptions.Left, VerticalAlignmentOptions.Middle, false, TextOverflowModes.Ellipsis);
+
+            RectTransform textRect = text.GetComponent<RectTransform>();
+            SetupRect(textRect, Vector2.zero, Vector2.one, new Vector2(-59f, 44f), new Vector2(-9.5f, 0));
+
+            // Arrow
+            Image arrowImage = arrow.GetComponent<Image>();
+            arrowImage.sprite = resources.listElementArrow;
+            arrowImage.color = new Color(1, 1, 1, 0.25f);
+
+            RectTransform arrowRect = arrow.GetComponent<RectTransform>();
+            SetupRect(arrowRect, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(11f, 44f), new Vector2(-25.5f, 0));
+
+            return root;
+        }
+
+        public static GameObject CreateListElementNoPlatter(Resources resources)
+        {
+            GameObject listElement = CreateListElement(resources);
+            listElement.name = "List Element (No Platter)";
+
+            Image background = listElement.GetComponent<Image>();
+            background.material = resources.lightElementMaterial;
+            background.color = new Color(1, 1, 1, 0);
+
+            return listElement;
+        }
+        #endregion
+
+        #region Setup Methods
+        private static void SetupWindowElement(GameObject background, GameObject alphaBackground, Resources resources)
+        {
+            if (!alphaBackground.TryGetComponent<LayoutElement>(out var layoutElement))
+                layoutElement = alphaBackground.AddComponent<LayoutElement>();
+
+            layoutElement.ignoreLayout = true;
+
+            RectTransform alphaBackgroundRect = alphaBackground.GetComponent<RectTransform>();
+            SetupRect(alphaBackgroundRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+
+            Image alphaBackgroundImage = alphaBackground.GetComponent<Image>();
+            Image backgroundImage = background.GetComponent<Image>();
+
+            SetupImage(alphaBackgroundImage, backgroundImage.sprite, new Color(1, 1, 1, 0), resources.alphaBackgroundMaterial, false, backgroundImage.raycastPadding,
+                backgroundImage.maskable, backgroundImage.type, backgroundImage.fillCenter, backgroundImage.pixelsPerUnitMultiplier);
+        }
+
+        public static void SetupRect(RectTransform rectTransform, Vector2 anchorMin, Vector2 anchorMax, Vector2 sizeDelta, Vector2 anchoredPosition)
+        {
+            rectTransform.anchorMin = anchorMin;
+            rectTransform.anchorMax = anchorMax;
+            rectTransform.sizeDelta = sizeDelta;
+            rectTransform.anchoredPosition = anchoredPosition;
+        }
+
+        public static void SetupImage(Image image, Sprite sprite, Color color, Material material, bool raycastTarget, Vector4 raycastPadding, bool maskable,
+            Image.Type type, bool fillCenter, float pixelsPerUnitMultiplier)
+        {
+            image.sprite = sprite;
+            image.color = color;
+            image.material = material;
+            image.raycastTarget = raycastTarget;
+            image.raycastPadding = raycastPadding;
+            image.maskable = maskable;
+            image.type = type;
+            image.fillCenter = fillCenter;
+            image.pixelsPerUnitMultiplier = pixelsPerUnitMultiplier;
+        }
+
+        public static void SetupTextMeshProUGUI(TextMeshProUGUI textMeshProUGUI, string text, TMP_FontAsset font, float fontSize, Color color, HorizontalAlignmentOptions horizontalAlignment,
+            VerticalAlignmentOptions verticalAlignment, bool enableWordWrapping, TextOverflowModes overflowMode)
+        {
+            textMeshProUGUI.text = text;
+            textMeshProUGUI.font = font;
+            textMeshProUGUI.fontSize = fontSize;
+            textMeshProUGUI.color = color;
+            textMeshProUGUI.horizontalAlignment = horizontalAlignment;
+            textMeshProUGUI.verticalAlignment = verticalAlignment;
+            textMeshProUGUI.enableWordWrapping = enableWordWrapping;
+            textMeshProUGUI.overflowMode = overflowMode;
+        }
+
+        public static void SetupToggle(Toggle toggle, Selectable.Transition transition, Navigation.Mode mode, bool isOn, Image graphic, ToggleGroup toggleGroup)
+        {
+            toggle.transition = transition;
+            Navigation navigation = toggle.navigation;
+            navigation.mode = mode;
+            toggle.navigation = navigation;
+            toggle.isOn = isOn;
+            toggle.graphic = graphic;
+            toggle.group = toggleGroup;
+        }
+
+        public static void SetupLayoutGroup(HorizontalOrVerticalLayoutGroup horizontalLayoutGroup, RectOffset padding, float spacing, TextAnchor childAligment,
+            bool childControlWidth, bool childControlHeight, bool childScaleWidth, bool childScaleHeight, bool childForceExpandWidth, bool childForceExpandHeight)
+        {
+            horizontalLayoutGroup.padding = padding;
+            horizontalLayoutGroup.spacing = spacing;
+            horizontalLayoutGroup.childAlignment = childAligment;
+            horizontalLayoutGroup.childControlWidth = childControlWidth;
+            horizontalLayoutGroup.childControlHeight = childControlHeight;
+            horizontalLayoutGroup.childScaleWidth = childScaleWidth;
+            horizontalLayoutGroup.childScaleHeight = childScaleHeight;
+            horizontalLayoutGroup.childForceExpandWidth = childForceExpandWidth;
+            horizontalLayoutGroup.childForceExpandHeight = childForceExpandHeight;
+        }
+        #endregion
     }
 }

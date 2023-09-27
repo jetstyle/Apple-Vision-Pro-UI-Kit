@@ -274,11 +274,13 @@ namespace JetXR.VisionUI.Editor
         {
             CheckResource(ref visionUIResources.darkElementMaterial, "Runtime/Materials/DarkElementBackground.mat");
             CheckResource(ref visionUIResources.lightElementMaterial, "Runtime/Materials/LightElementBackground.mat");
+            CheckResource(ref visionUIResources.lightElementWithFrameMaterial, "Runtime/Materials/LightElementBackgroundWithFrame.mat");
             CheckResource(ref visionUIResources.windowBlurredBackgroundMaterial, "Runtime/Materials/WindowBlurredBackground.mat");
             CheckResource(ref visionUIResources.windowBlurredOverlayMaterial, "Runtime/Materials/WindowBlurredOverlayBackground.mat");
             CheckResource(ref visionUIResources.windowOverlayMaterial, "Runtime/Materials/WindowOverlayBackground.mat");
             CheckResource(ref visionUIResources.toolbarBlurredOverlayMaterial, "Runtime/Materials/ToolbarBlurredOverlayBackground.mat");
             CheckResource(ref visionUIResources.tabbarBlurredOverlayMaterial, "Runtime/Materials/TabbarBlurredOverlayBackground.mat");
+            CheckResource(ref visionUIResources.alphaBackgroundMaterial, "Runtime/Materials/AlphaBackground.mat");
 
             CheckProjectResource(ref visionUIResources.fontSemibold, "SF-Pro-Display-Semibold SDF");
             CheckProjectResource(ref visionUIResources.fontBold, "SF-Pro-Display-Bold SDF");
@@ -341,6 +343,7 @@ namespace JetXR.VisionUI.Editor
             CheckResource(ref visionUIResources.windowGlassNoAlpha, "Runtime/Sprites/Windows/WindowGlassNoAlpha.png");
             CheckResource(ref visionUIResources.windowGlassSmallerSpecular, "Runtime/Sprites/Windows/WindowGlassSmallerSpecular.png");
             CheckResource(ref visionUIResources.windowShadow, "Runtime/Sprites/Windows/WindowShadow.png");
+            CheckResource(ref visionUIResources.windowFloorShadow, "Runtime/Sprites/Windows/WindowFloorShadow.png");
             CheckResource(ref visionUIResources.sidebar, "Runtime/Sprites/Windows/Sidebar.png");
 
             CheckResource(ref visionUIResources.scrollbarHandle, "Runtime/Sprites/Dropdown/ScrollbarHandle.png");
@@ -365,8 +368,9 @@ namespace JetXR.VisionUI.Editor
             CheckResource(ref visionUIResources.crossIcon, "Runtime/Sprites/Icons/Cross Icon.png");
 
             CheckResource(ref visionUIResources.tabbarBackground, "Runtime/Sprites/Tabbar/TabbarBackground.png");
-            CheckResource(ref visionUIResources.tabbarToggleHighlight, "Runtime/Sprites/Tabbar/TabbarToggleHighlight.png");
             CheckResource(ref visionUIResources.tabbarShadow, "Runtime/Sprites/Tabbar/TabbarShadow.png");
+
+            CheckResource(ref visionUIResources.segmentedControlHighlight, "Runtime/Sprites/SegmentedControl/SegmentedControlHighlight.png");
         }
 
         #region Buttons
@@ -545,9 +549,6 @@ namespace JetXR.VisionUI.Editor
             toolbarRect.anchorMax = new Vector2(0.5f, 0);
             toolbarRect.pivot = new Vector2(0.5f, 1f);
             toolbarRect.anchoredPosition3D = new Vector3(0, 20, -20);
-
-            RectTransform windowControlsRect = go.transform.Find("Window Controls").GetComponent<RectTransform>();
-            windowControlsRect.anchoredPosition3D = new Vector3(0, -70, -20);
         }
 
         [MenuItem("GameObject/Vision UI/Windows/Alert", false, 10)]
@@ -557,6 +558,20 @@ namespace JetXR.VisionUI.Editor
             using (new FactorySwapToEditor())
                 go = VisionControls.CreateAlert(GetStandardResources());
             PlaceUIElementRoot(go, menuCommand);
+        }
+
+        [MenuItem("GameObject/Vision UI/Windows/Windows Stacker", false, 10)]
+        static public void AddWindowsStacker(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateWindowsStacker(GetStandardResources());
+            PlaceUIElementRoot(go, menuCommand);
+
+            var windowControls = go.transform.Find($"Window Controls");
+            var closeButtonWindow = windowControls.Find($"Close Button Window");
+
+            UnityEventTools.AddPersistentListener(closeButtonWindow.GetComponent<Button>().onClick, go.GetComponent<WindowsStacker>().CloseWindow);
         }
         #endregion
 
@@ -619,7 +634,39 @@ namespace JetXR.VisionUI.Editor
             sidebarRect.pivot = new Vector2(0, 0.5f);
             sidebarRect.anchoredPosition = new Vector2(3, 0);
         }
+
+        [MenuItem("GameObject/Vision UI/Windows/Add-ons/Window Controls", false, 10)]
+        static public void AddWindowControls(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateWindowControls(GetStandardResources());
+            PlaceUIElementRoot(go, menuCommand);
+
+            RectTransform windowControlsRect = go.GetComponent<RectTransform>();
+            windowControlsRect.anchorMin = new Vector2(0.5f, 0);
+            windowControlsRect.anchorMax = new Vector2(0.5f, 0);
+            windowControlsRect.pivot = new Vector2(0.5f, 1);
+            windowControlsRect.sizeDelta = new Vector2(174, 14);
+            windowControlsRect.anchoredPosition = new Vector2(0, -22);
+
+            Grabber grabber = go.GetComponentInChildren<Grabber>();
+            grabber.SetReferences((menuCommand.context as GameObject).transform);
+        }
         #endregion
+
+        #region List
+        [MenuItem("GameObject/Vision UI/List/Completed List", false, 10)]
+        static public void AddCompletedList(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateCompletedList(GetStandardResources());
+            PlaceUIElementRoot(go, menuCommand);
+
+            RectTransform completedListRect = go.GetComponent<RectTransform>();
+            VisionControls.SetupRect(completedListRect, new Vector2(0, 0.5f), new Vector2(1, 0.5f), new Vector2(0, 298), Vector2.zero);
+        }
 
         [MenuItem("GameObject/Vision UI/List/List Element", false, 10)]
         static public void AddListElement(MenuCommand menuCommand)
@@ -629,6 +676,16 @@ namespace JetXR.VisionUI.Editor
                 go = VisionControls.CreateListElement(GetStandardResources());
             PlaceUIElementRoot(go, menuCommand);
         }
+
+        [MenuItem("GameObject/Vision UI/List/List Element (No Platter)", false, 10)]
+        static public void AddListElementNoPlatter(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateListElementNoPlatter(GetStandardResources());
+            PlaceUIElementRoot(go, menuCommand);
+        }
+        #endregion
 
         [MenuItem("GameObject/Vision UI/Toggle", false, 10)]
         static public void AddToggle(MenuCommand menuCommand)
@@ -682,7 +739,7 @@ namespace JetXR.VisionUI.Editor
             PlaceUIElementRoot(go, menuCommand);
         }
 
-        [MenuItem("GameObject/Vision UI/InputField", false, 10)]
+        [MenuItem("GameObject/Vision UI/Input Field", false, 10)]
         static public void AddInputField(MenuCommand menuCommand)
         {
             GameObject go;
@@ -699,6 +756,15 @@ namespace JetXR.VisionUI.Editor
             UnityEventTools.AddStringPersistentListener(cButton.onClick, (UnityAction<string>)targetAction, "");
 
             UnityEventTools.AddVoidPersistentListener(cButton.onClick, inputField.Select);
+        }
+
+        [MenuItem("GameObject/Vision UI/Segmented Control", false, 10)]
+        static public void AddSegmentedControl(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateSegmentedControl(GetStandardResources());
+            PlaceUIElementRoot(go, menuCommand);
         }
     }
 }

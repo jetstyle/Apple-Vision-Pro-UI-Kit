@@ -96,7 +96,7 @@ Shader "VisionUI/AddBackground"
 
                     OUT.texcoord = TRANSFORM_TEX(v.texcoord, _MainTex);
 
-                    OUT.color = lerp(_AddColor, v.color * _Color * _AddColor, _BaseColorValue);
+                    OUT.color = lerp(_AddColor * half4(1, 1, 1, v.color.a), v.color * _Color * _AddColor, _BaseColorValue);
                     return OUT;
                 }
 

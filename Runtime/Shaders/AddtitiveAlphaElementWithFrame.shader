@@ -50,7 +50,6 @@ Shader "VisionUI/AdditiveAlphaElementWithFrame"
 
             UsePass "VisionUI/AddBackground/AddLayer"
 
-            UsePass "VisionUI/AlphaBackground/AlphaLayer"
 
             UsePass "VisionUI/FrameOverlay/FrameLayer"
         }

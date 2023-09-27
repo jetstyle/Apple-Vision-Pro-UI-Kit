@@ -87,12 +87,13 @@ Demonstration of interfaces based on our package (captured on Meta Quest 2 with 
 </p>
 
 1. Buttons
-    + Symbol
-    + Text
-    + Text + Symbol
-    + Text Rounded Rect
+    + Symbol (+ No Platter version)
+    + Text (+ No Platter version)
+    + Text + Symbol (+ No Platter version)
+    + Text Rounded Rect (+ No Platter version)
 2. List
-    + List Element
+    + Completed List
+    + List Element (+ No Platter version)
 3. Progress Indicators
     + Throbber
     + Progress Bar
@@ -104,10 +105,13 @@ Demonstration of interfaces based on our package (captured on Meta Quest 2 with 
     + Window + Tabbar
     + Window + Toolbar
     + Alert
+    + Windows Stacker
     + Add-ons
         * Toolbar
         * Tabbar
         * Sidebar
+        * Window Controls
 6. Input Field
 7. Toggle
 8. Tooltip
+9. Segmented Control

@@ -96,7 +96,7 @@ Shader "VisionUI/MultiplyBackground"
 
                     OUT.texcoord = TRANSFORM_TEX(v.texcoord, _MainTex);
     
-                    OUT.color = lerp(_MultColor, v.color * _Color * _MultColor, _BaseColorValue);
+                    OUT.color = lerp(_MultColor * half4(1, 1, 1, v.color.a), v.color * _Color * _MultColor, _BaseColorValue);
                     return OUT;
                 }
 
