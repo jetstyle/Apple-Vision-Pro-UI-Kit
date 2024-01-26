@@ -9,6 +9,7 @@ namespace JetXR.VisionUI
     public class WindowsStacker : MonoBehaviour
     {
         [SerializeField] private  GameObject activeWindow;
+        [SerializeField] private Transform windowControls;
         [SerializeField] private float distanceBetweenWindows = 45;
         [SerializeField] private float maxVisibleWindows = 5;
         [SerializeField] private float transitionDuration = 0.5f;
@@ -33,11 +34,17 @@ namespace JetXR.VisionUI
             {
                 stack.Push(activeWindow);
             }
+
+            if (windowControls != null)
+                windowControls.SetAsLastSibling();
         }
 
         public void OpenWindowFromPrefab(GameObject prefab)
         {
             var newWindow = GameObject.Instantiate(prefab, transform);
+
+            if (windowControls != null)
+                windowControls.SetAsLastSibling();
 
             OpenWindow(newWindow);
         }
@@ -83,6 +90,9 @@ namespace JetXR.VisionUI
                     {
                         activeWindow.transform.SetParent(transform);
                         activeWindow.transform.SetAsLastSibling();
+
+                        if (windowControls != null)
+                            windowControls.SetAsLastSibling();
                     }
                 }));
             }
@@ -183,9 +193,10 @@ namespace JetXR.VisionUI
             return inactiveTintObject;
         }
 
-        public void SetReferences(GameObject activeWindow)
+        public void SetReferences(GameObject activeWindow, Transform windowControls)
         {
             this.activeWindow = activeWindow;
+            this.windowControls = windowControls;
         }
     }
 }

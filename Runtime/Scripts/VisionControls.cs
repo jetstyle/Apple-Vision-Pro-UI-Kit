@@ -18,6 +18,7 @@ namespace JetXR.VisionUI
         private const float kWidth = 160f;
         private const float kThickHeight = 30f;
         private const float kThinHeight = 20f;
+
         private static Vector2 s_ThickElementSize = new Vector2(kWidth, kThickHeight);
         private static Vector2 s_ThinElementSize = new Vector2(kWidth, kThinHeight);
         private static Vector2 s_ImageElementSize = new Vector2(100f, 100f);
@@ -27,6 +28,7 @@ namespace JetXR.VisionUI
         private static Color s_TextColorSecondary = new Color(1, 1, 1, 0.25f);
         private static Color s_TextColorTertiary = new Color(1, 1, 1, 0.1f);
         private static Color s_WindowElementColor = new Color(1, 1, 1, 1);
+        private static Color s_WhiteTransparent = new Color(1, 1, 1, 0);
         #endregion
 
         #region Utilities
@@ -111,8 +113,10 @@ namespace JetXR.VisionUI
             public RuntimeAnimatorController symbolNoPlatterAnimatorController;
             public RuntimeAnimatorController symbolTextButtonController;
             public RuntimeAnimatorController symbolTextButtonNoPlatterController;
+            public RuntimeAnimatorController miniSliderAnimatorController;
             public RuntimeAnimatorController smallSliderAnimatorController;
             public RuntimeAnimatorController regularSliderAnimatorController;
+            public RuntimeAnimatorController largeSliderAnimatorController;
             public RuntimeAnimatorController throbberAnimatorController;
             public RuntimeAnimatorController listElementAnimatorController;
             public RuntimeAnimatorController toggleAnimatorController;
@@ -122,6 +126,8 @@ namespace JetXR.VisionUI
             public RuntimeAnimatorController tabbarToggleController;
             public RuntimeAnimatorController closeButtonController;
             public RuntimeAnimatorController grabberController;
+            public RuntimeAnimatorController volumeController;
+            public RuntimeAnimatorController resizerController;
 
             public Sprite buttonBackground;
             public Sprite buttonHighlight;
@@ -130,16 +136,22 @@ namespace JetXR.VisionUI
             public Sprite roundedRectBackground;
             public Sprite roundedRectHighlight;
 
-            public Sprite sliderKnob;
+            public Sprite sliderElement;
             public Sprite sliderHighlight;
-            public Sprite smallSliderBackground;
-            public Sprite smallSliderFill;
+            public Sprite miniSliderShadow;
+            public Sprite miniSliderGlow;
+            public Sprite miniSliderEmboss;
             public Sprite smallSliderShadow;
             public Sprite smallSliderGlow;
+            public Sprite smallSliderEmboss;
             public Sprite regularSliderBackground;
             public Sprite regularSliderFill;
             public Sprite regularSliderShadow;
             public Sprite regularSliderGlow;
+            public Sprite regularSliderEmboss;
+            public Sprite largeSliderShadow;
+            public Sprite largeSliderGlow;
+            public Sprite largeSliderEmboss;
 
             public Sprite toggleBGStateOff;
             public Sprite toggleBGStateOn;
@@ -187,12 +199,20 @@ namespace JetXR.VisionUI
             public Sprite tabbarBackground;
             public Sprite segmentedControlHighlight;
             public Sprite tabbarShadow;
+
+            public Sprite speakerSlash;
+            public Sprite speaker1;
+            public Sprite speaker2;
+            public Sprite speaker3;
+
+            public Sprite trailing;
         }
 
         // Button - Text (Platter)
-        public static GameObject CreateTextButton(Resources resources)
+        public static GameObject CreateTextButton(Resources resources, float width, float height, float fontSize)
+        //float multiplier
         {
-            GameObject root = CreateUIElementRoot("Button - Text", new Vector2(86f, 44f), typeof(Image), typeof(Button), typeof(Animator));
+            GameObject root = CreateUIElementRoot("Button - Text", new Vector2(width, height), typeof(Image), typeof(Button), typeof(Animator));
 
             GameObject alphaBackground = CreateUIObject("Alpha Background", root, typeof(Image));
             GameObject highlight = CreateUIObject("Highlight", root, typeof(Image));
@@ -211,72 +231,59 @@ namespace JetXR.VisionUI
 
             // Image
             Image background = root.GetComponent<Image>();
-            background.sprite = resources.buttonBackground;
-            background.color = s_WindowElementColor;
-            background.material = resources.lightElementMaterial;
-            background.type = Image.Type.Sliced;
-            background.pixelsPerUnitMultiplier = 4;
-            background.raycastPadding = new Vector4(0, -8, 0, -8);
+
+            float horizontalPadding = width > 60 ? 0 : (width - 60) / 2;
+            float verticalPadding = height > 60 ? 0 : (height - 60) / 2;
+            Vector4 padding = new Vector4(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding);
+
+            SetupImage(background, resources.buttonBackground, s_WindowElementColor, resources.lightElementMaterial, true, padding, true, Image.Type.Sliced, true, resources.buttonBackground.texture.height / height);
 
             SetupWindowElement(root, alphaBackground, resources);
 
             // Highlight
             Image highlightImage = highlight.GetComponent<Image>();
-            highlightImage.sprite = resources.buttonHighlight;
-            highlightImage.color = new Color(1f, 1f, 1f, 0f);
-            highlightImage.type = Image.Type.Sliced;
-            highlightImage.pixelsPerUnitMultiplier = 4;
+            SetupImage(highlightImage, resources.buttonHighlight, s_WhiteTransparent, null, false, Vector4.zero, true, Image.Type.Sliced, true, resources.buttonHighlight.texture.height / height);
 
             RectTransform highlightRect = highlight.GetComponent<RectTransform>();
-            highlightRect.anchorMin = new Vector2(0, 0f);
-            highlightRect.anchorMax = new Vector2(1, 1f);
-            highlightRect.sizeDelta = new Vector2(0, 0);
+            SetupRect(highlightRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
 
             // Text
             TextMeshProUGUI textTMP = text.GetComponent<TextMeshProUGUI>();
-            textTMP.text = "Label";
-            textTMP.horizontalAlignment = HorizontalAlignmentOptions.Center;
-            textTMP.verticalAlignment = VerticalAlignmentOptions.Middle;
-            textTMP.font = resources.fontSemibold;
-            textTMP.fontSize = 17;
-            textTMP.overflowMode = TextOverflowModes.Ellipsis;
-            textTMP.enableWordWrapping = false;
+            SetupTextMeshProUGUI(textTMP, "Label", resources.fontSemibold, fontSize, Color.white, HorizontalAlignmentOptions.Center, VerticalAlignmentOptions.Middle, false, TextOverflowModes.Ellipsis);
 
             RectTransform textRect = text.GetComponent<RectTransform>();
-            textRect.anchorMin = new Vector2(0, 0f);
-            textRect.anchorMax = new Vector2(1, 1f);
-            textRect.sizeDelta = new Vector2(-22, 0);
+            SetupRect(textRect, Vector2.zero, Vector2.one, new Vector2(-22, 0), Vector2.zero);
 
             return root;
         }
 
         // Button - Text (No Platter)
-        public static GameObject CreateTextButtonNoPlatter(Resources resources)
+        public static GameObject CreateTextButtonNoPlatter(Resources resources, float width, float height, float fontSize)
         {
-            GameObject button = CreateTextButton(resources);
-            GameObject highlight = button.transform.Find("Highlight").gameObject;
+            GameObject button = CreateTextButton(resources, width, height, fontSize);
             button.name = "Button - Text (No Platter)";
 
             Animator buttonAnimator = button.GetComponent<Animator>();
             SetAnimatorController(buttonAnimator, resources.buttonNoPlatterAnimatorController);
 
             Image background = button.GetComponent<Image>();
-            background.color = new Color(1f, 1f, 1f, 0f);
+            background.color = s_WhiteTransparent;
 
+            GameObject highlight = button.transform.Find("Highlight").gameObject;
             Image highlightImage = highlight.GetComponent<Image>();
-            highlightImage.color = new Color(1f, 1f, 1f, 0f);
+            highlightImage.color = s_WhiteTransparent;
 
             GameObject alphaBackground = button.transform.Find("Alpha Background").gameObject;
             Image alphaBackgroundImage = alphaBackground.GetComponent<Image>();
-            alphaBackgroundImage.color = new Color(1, 1, 1, 0);
+            alphaBackgroundImage.color = s_WhiteTransparent;
 
             return button;
         }
 
         // Button - Text+Symbol (Platter)
-        public static GameObject CreateTextSymbolButton(Resources resources)
+        public static GameObject CreateTextSymbolButton(Resources resources, float width, float height, float fontSize)
         {
-            GameObject root = CreateUIElementRoot("Button - Text+Symbol", new Vector2(120f, 44f), typeof(Image), typeof(Button), typeof(Animator));
+            GameObject root = CreateUIElementRoot("Button - Text+Symbol", new Vector2(width, height), typeof(Image), typeof(Button), typeof(Animator));
 
             GameObject alphaBackground = CreateUIObject("Alpha Background", root, typeof(Image));
             GameObject highlight = CreateUIObject("Highlight", root, typeof(Image));
@@ -296,83 +303,70 @@ namespace JetXR.VisionUI
 
             // Image
             Image background = root.GetComponent<Image>();
-            background.sprite = resources.buttonBackground;
-            background.color = s_WindowElementColor;
-            background.material = resources.lightElementMaterial;
-            background.type = Image.Type.Sliced;
-            background.pixelsPerUnitMultiplier = 4;
-            background.raycastPadding = new Vector4(0, -8, 0, -8);
+
+            float horizontalPadding = width > 60 ? 0 : (width - 60) / 2;
+            float verticalPadding = height > 60 ? 0 : (height - 60) / 2;
+            Vector4 padding = new Vector4(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding);
+
+            SetupImage(background, resources.buttonBackground, s_WindowElementColor, resources.lightElementMaterial, true, padding, true, Image.Type.Sliced, true, resources.buttonBackground.texture.height / height);
 
             SetupWindowElement(root, alphaBackground, resources);
 
             // Highlight
             Image highlightImage = highlight.GetComponent<Image>();
-            highlightImage.sprite = resources.buttonHighlight;
-            highlightImage.color = new Color(1f, 1f, 1f, 0f);
-            highlightImage.type = Image.Type.Sliced;
-            highlightImage.pixelsPerUnitMultiplier = 4;
+            SetupImage(highlightImage, resources.buttonHighlight, s_WhiteTransparent, null, false, Vector4.zero, true, Image.Type.Sliced, true, resources.buttonHighlight.texture.height / height);
 
             RectTransform highlightRect = highlight.GetComponent<RectTransform>();
-            highlightRect.anchorMin = new Vector2(0, 0f);
-            highlightRect.anchorMax = new Vector2(1, 1f);
-            highlightRect.sizeDelta = new Vector2(0, 0);
+            SetupRect(highlightRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
 
             // Text
             TextMeshProUGUI textTMP = text.GetComponent<TextMeshProUGUI>();
-            textTMP.text = "Label";
-            textTMP.horizontalAlignment = HorizontalAlignmentOptions.Left;
-            textTMP.verticalAlignment = VerticalAlignmentOptions.Middle;
-            textTMP.font = resources.fontSemibold;
-            textTMP.fontSize = 17;
-            textTMP.overflowMode = TextOverflowModes.Ellipsis;
-            textTMP.enableWordWrapping = false;
+            SetupTextMeshProUGUI(textTMP, "Label", resources.fontSemibold, fontSize, Color.white, HorizontalAlignmentOptions.Left, VerticalAlignmentOptions.Middle, false, TextOverflowModes.Ellipsis);
 
             RectTransform textRect = text.GetComponent<RectTransform>();
-            textRect.anchorMin = new Vector2(0, 0f);
-            textRect.anchorMax = new Vector2(1, 1f);
-            textRect.anchoredPosition = new Vector2(16.5f, 0);
-            textRect.sizeDelta = new Vector2(-55, 0);
+
+            float sizeDeltaX = -(height + 11);
+            float positionX = ((width - (height + 11)) / 2 + height) - width / 2;
+
+            SetupRect(textRect, Vector2.zero, Vector2.one, new Vector2(sizeDeltaX, 0), new Vector2(positionX, 0));
 
             // Symbol
             Image symbolImage = symbol.GetComponent<Image>();
             symbolImage.sprite = resources.symbol;
 
             RectTransform symbolRect = symbol.GetComponent<RectTransform>();
-            symbolRect.anchorMin = new Vector2(0, 0.5f);
-            symbolRect.anchorMax = new Vector2(0, 0.5f);
-            symbolRect.anchoredPosition = new Vector2(22, 0);
-            symbolRect.sizeDelta = new Vector2(44f, 44f);
+            SetupRect(symbolRect, new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(height, height), new Vector2(height / 2, 0));
 
             return root;
         }
 
         // Button - Text+Symbol (No Platter)
-        public static GameObject CreateTextSymbolButtonNoPlatter(Resources resources)
+        public static GameObject CreateTextSymbolButtonNoPlatter(Resources resources, float width, float height, float fontSize)
         {
-            GameObject button = CreateTextSymbolButton(resources);
-            GameObject highlight = button.transform.Find("Highlight").gameObject;
+            GameObject button = CreateTextSymbolButton(resources, width, height, fontSize);
             button.name = "Button - Text+Symbol (No Platter)";
 
             Animator buttonAnimator = button.GetComponent<Animator>();
             SetAnimatorController(buttonAnimator, resources.symbolTextButtonNoPlatterController);
 
             Image background = button.GetComponent<Image>();
-            background.color = new Color(1f, 1f, 1f, 0f);
+            background.color = s_WhiteTransparent;
 
+            GameObject highlight = button.transform.Find("Highlight").gameObject;
             Image highlightImage = highlight.GetComponent<Image>();
-            highlightImage.color = new Color(1f, 1f, 1f, 0f);
+            highlightImage.color = s_WhiteTransparent;
 
             GameObject alphaBackground = button.transform.Find("Alpha Background").gameObject;
             Image alphaBackgroundImage = alphaBackground.GetComponent<Image>();
-            alphaBackgroundImage.color = new Color(1, 1, 1, 0);
+            alphaBackgroundImage.color = s_WhiteTransparent;
 
             return button;
         }
 
         // Button - Text Rounded Rect (Platter)
-        public static GameObject CreateRoundedRectButton(Resources resources)
+        public static GameObject CreateRoundedRectButton(Resources resources, float width, float height, float fontSize)
         {
-            GameObject root = CreateUIElementRoot("Button - Text Rounded Rect", new Vector2(86f, 44f), typeof(Image), typeof(Button), typeof(Animator));
+            GameObject root = CreateUIElementRoot("Button - Text Rounded Rect", new Vector2(width, height), typeof(Image), typeof(Button), typeof(Animator));
 
             GameObject alphaBackground = CreateUIObject("Alpha Background", root, typeof(Image));
             GameObject highlight = CreateUIObject("Highlight", root, typeof(Image));
@@ -391,72 +385,59 @@ namespace JetXR.VisionUI
 
             // Image
             Image background = root.GetComponent<Image>();
-            background.sprite = resources.roundedRectBackground;
-            background.color = s_WindowElementColor;
-            background.material = resources.lightElementMaterial;
-            background.type = Image.Type.Sliced;
-            background.pixelsPerUnitMultiplier = 4;
-            background.raycastPadding = new Vector4(0, -8, 0, -8);
+
+            float horizontalPadding = width > 60 ? 0 : (width - 60) / 2;
+            float verticalPadding = height > 60 ? 0 : (height - 60) / 2;
+            Vector4 padding = new Vector4(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding);
+
+            SetupImage(background, resources.roundedRectBackground, s_WindowElementColor, resources.lightElementMaterial, true, padding, true, Image.Type.Sliced, true, resources.roundedRectBackground.texture.height / height);
 
             SetupWindowElement(root, alphaBackground, resources);
 
             // Highlight
             Image highlightImage = highlight.GetComponent<Image>();
-            highlightImage.sprite = resources.roundedRectHighlight;
-            highlightImage.color = new Color(1f, 1f, 1f, 0f);
-            highlightImage.type = Image.Type.Sliced;
-            highlightImage.pixelsPerUnitMultiplier = 4;
+            SetupImage(highlightImage, resources.roundedRectHighlight, s_WhiteTransparent, null, false, Vector4.zero, true, Image.Type.Sliced, true, resources.roundedRectHighlight.texture.height / height);
 
             RectTransform highlightRect = highlight.GetComponent<RectTransform>();
-            highlightRect.anchorMin = new Vector2(0, 0f);
-            highlightRect.anchorMax = new Vector2(1, 1f);
-            highlightRect.sizeDelta = new Vector2(0, 0);
+            SetupRect(highlightRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
 
             // Text
             TextMeshProUGUI textTMP = text.GetComponent<TextMeshProUGUI>();
-            textTMP.text = "Label";
-            textTMP.horizontalAlignment = HorizontalAlignmentOptions.Center;
-            textTMP.verticalAlignment = VerticalAlignmentOptions.Middle;
-            textTMP.font = resources.fontSemibold;
-            textTMP.fontSize = 17;
-            textTMP.overflowMode = TextOverflowModes.Ellipsis;
-            textTMP.enableWordWrapping = false;
+            SetupTextMeshProUGUI(textTMP, "Label", resources.fontSemibold, fontSize, Color.white, HorizontalAlignmentOptions.Center, VerticalAlignmentOptions.Middle, false, TextOverflowModes.Ellipsis);
 
             RectTransform textRect = text.GetComponent<RectTransform>();
-            textRect.anchorMin = new Vector2(0, 0f);
-            textRect.anchorMax = new Vector2(1, 1f);
-            textRect.sizeDelta = new Vector2(-22, 0);
+            SetupRect(textRect, Vector2.zero, Vector2.one, new Vector2(-22, 0), Vector2.zero);
 
             return root;
         }
 
         // Button - Text Rounded Rect (No Platter)
-        public static GameObject CreateRoundedRectButtonNoPlatter(Resources resources)
+        public static GameObject CreateRoundedRectButtonNoPlatter(Resources resources, float width, float height, float fontSize)
         {
-            GameObject button = CreateRoundedRectButton(resources);
-            GameObject highlight = button.transform.Find("Highlight").gameObject;
+            GameObject button = CreateRoundedRectButton(resources, width, height, fontSize);
             button.name = "Button - Text Rounded Rect (No Platter)";
 
             Animator buttonAnimator = button.GetComponent<Animator>();
             SetAnimatorController(buttonAnimator, resources.buttonNoPlatterAnimatorController);
 
             Image background = button.GetComponent<Image>();
-            background.color = new Color(1f, 1f, 1f, 0f);
+            background.color = s_WhiteTransparent;
 
+            GameObject highlight = button.transform.Find("Highlight").gameObject;
             Image highlightImage = highlight.GetComponent<Image>();
-            highlightImage.color = new Color(1f, 1f, 1f, 0f);
+            highlightImage.color = s_WhiteTransparent;
 
             GameObject alphaBackground = button.transform.Find("Alpha Background").gameObject;
             Image alphaBackgroundImage = alphaBackground.GetComponent<Image>();
-            alphaBackgroundImage.color = new Color(1, 1, 1, 0);
+            alphaBackgroundImage.color = s_WhiteTransparent;
 
             return button;
         }
 
         // Button - Symbol (Platter)
-        public static GameObject CreateSymbolButton(Resources resources)
+        public static GameObject CreateSymbolButton(Resources resources, float size)
         {
-            GameObject root = CreateUIElementRoot("Button - Symbol", new Vector2(44f, 44f), typeof(Image), typeof(Button), typeof(Animator));
+            GameObject root = CreateUIElementRoot("Button - Symbol", new Vector2(size, size), typeof(Image), typeof(Button), typeof(Animator));
 
             GameObject alphaBackground = CreateUIObject("Alpha Background", root, typeof(Image));
             GameObject highlight = CreateUIObject("Highlight", root, typeof(Image));
@@ -475,173 +456,249 @@ namespace JetXR.VisionUI
 
             // Image
             Image background = root.GetComponent<Image>();
-            background.sprite = resources.buttonBackground;
-            background.color = s_WindowElementColor;
-            background.material = resources.lightElementMaterial;
-            background.type = Image.Type.Sliced;
-            background.pixelsPerUnitMultiplier = 4;
-            background.raycastPadding = new Vector4(-8, -8, -8, -8);
+
+            float buttonPadding = size > 60 ? 0 : (size - 60) / 2;
+            Vector4 padding = new Vector4(buttonPadding, buttonPadding, buttonPadding, buttonPadding);
+
+            SetupImage(background, resources.buttonBackground, s_WindowElementColor, resources.lightElementMaterial, true, padding, true, Image.Type.Sliced, true, resources.buttonBackground.texture.height / size);
 
             SetupWindowElement(root, alphaBackground, resources);
 
             // Highlight
             Image highlightImage = highlight.GetComponent<Image>();
-            highlightImage.sprite = resources.symbolHighlight;
-            highlightImage.color = new Color(1f, 1f, 1f, 0f);
+            SetupImage(highlightImage, resources.symbolHighlight, s_WhiteTransparent, null, false, Vector4.zero, true, Image.Type.Sliced, true, resources.symbolHighlight.texture.height / size);
 
             RectTransform highlightRect = highlight.GetComponent<RectTransform>();
-            highlightRect.anchorMin = Vector2.zero;
-            highlightRect.anchorMax = Vector2.one;
-            highlightRect.sizeDelta = new Vector2(0, 0);
+            SetupRect(highlightRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
 
             // Symbol
             Image symbolImage = symbol.GetComponent<Image>();
             symbolImage.sprite = resources.symbol;
 
             RectTransform symbolRect = symbol.GetComponent<RectTransform>();
-            symbolRect.anchorMin = Vector2.zero;
-            symbolRect.anchorMax = Vector2.one;
-            symbolRect.sizeDelta = new Vector2(0, 0);
+            SetupRect(symbolRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
 
             return root;
         }
 
         // Button - Symbol (No Platter)
-        public static GameObject CreateSymbolButtonNoPlatter(Resources resources)
+        public static GameObject CreateSymbolButtonNoPlatter(Resources resources, float size)
         {
-            GameObject button = CreateSymbolButton(resources);
-            GameObject highlight = button.transform.Find("Highlight").gameObject;
+            GameObject button = CreateSymbolButton(resources, size);
             button.name = "Button - Symbol (No Platter)";
 
             Animator buttonAnimator = button.GetComponent<Animator>();
             SetAnimatorController(buttonAnimator, resources.symbolNoPlatterAnimatorController);
 
             Image background = button.GetComponent<Image>();
-            background.color = new Color(1f, 1f, 1f, 0f);
+            background.color = s_WhiteTransparent;
 
+            GameObject highlight = button.transform.Find("Highlight").gameObject;
             Image highlightImage = highlight.GetComponent<Image>();
-            highlightImage.color = new Color(1f, 1f, 1f, 0f);
+            highlightImage.color = s_WhiteTransparent;
 
             GameObject alphaBackground = button.transform.Find("Alpha Background").gameObject;
             Image alphaBackgroundImage = alphaBackground.GetComponent<Image>();
-            alphaBackgroundImage.color = new Color(1, 1, 1, 0);
+            alphaBackgroundImage.color = s_WhiteTransparent;
 
             return button;
         }
 
-        // Small Slider 16px
-        public static GameObject CreateSmallSlider(Resources resources)
+        // Mini Slider 12px
+        public static GameObject CreateMiniSlider(Resources resources, float height)
         {
-            GameObject root = CreateUIElementRoot("Small Slider", new Vector2(288f, 16f), typeof(Slider), typeof(Animator));
+            GameObject root = CreateUIElementRoot("Mini Slider", new Vector2(288f, height), typeof(Slider), typeof(Animator));
 
             GameObject background = CreateUIObject("Background", root, typeof(Image));
-            GameObject alphaBackground = CreateUIObject("Alpha Background", background, typeof(Image));
             GameObject mask = CreateUIObject("Mask", root, typeof(Mask), typeof(Image));
             GameObject fillArea = CreateUIObject("Fill Area", mask, typeof(RectTransform));
             GameObject fill = CreateUIObject("Fill", fillArea, typeof(Image));
             GameObject shadow = CreateUIObject("Shadow", fill, typeof(Image));
             GameObject highlight = CreateUIObject("Highlight", fill, typeof(Image));
+            GameObject emboss = CreateUIObject("Emboss", root, typeof(Image));
             GameObject handleArea = CreateUIObject("Handle Slide Area", root, typeof(RectTransform));
             GameObject handle = CreateUIObject("Handle", handleArea, typeof(Image));
             GameObject glow = CreateUIObject("Glow", handle, typeof(Image));
 
             // Background
             Image backgroundImage = background.GetComponent<Image>();
-            backgroundImage.sprite = resources.smallSliderBackground;
-            backgroundImage.material = resources.darkElementMaterial;
-            backgroundImage.type = Image.Type.Sliced;
-            backgroundImage.color = s_WindowElementColor;
-            backgroundImage.pixelsPerUnitMultiplier = 4;
-            backgroundImage.raycastPadding = new Vector4(0, -22, 0, -22);
+
+            float verticalPadding = height > 60 ? 0 : (height - 60) / 2;
+            Vector4 padding = new Vector4(0, verticalPadding, 0, verticalPadding);
+
+            SetupImage(backgroundImage, resources.sliderElement, s_WindowElementColor, resources.darkElementMaterial, true, padding, true, Image.Type.Sliced, true, resources.sliderElement.texture.height / height);
 
             RectTransform backgroundRect = background.GetComponent<RectTransform>();
-            backgroundRect.anchorMin = new Vector2(0, 0f);
-            backgroundRect.anchorMax = new Vector2(1, 1f);
-            backgroundRect.sizeDelta = new Vector2(0, 0);
-
-            SetupWindowElement(background, alphaBackground, resources);
+            SetupRect(backgroundRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
 
             // Mask
             Image maskImage = mask.GetComponent<Image>();
-            maskImage.sprite = resources.smallSliderBackground;
-            maskImage.type = Image.Type.Sliced;
-            maskImage.pixelsPerUnitMultiplier = 4;
-            maskImage.raycastTarget = false;
+            SetupImage(maskImage, resources.sliderElement, s_WindowElementColor, null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Sliced, true, resources.sliderElement.texture.height / height);
 
             Mask maskMask = mask.GetComponent<Mask>();
             maskMask.showMaskGraphic = false;
-     
+
             RectTransform maskRect = mask.GetComponent<RectTransform>();
-            maskRect.anchorMin = new Vector2(0, 0f);
-            maskRect.anchorMax = new Vector2(1, 1f);
-            maskRect.sizeDelta = new Vector2(0, 0);
-     
+            SetupRect(maskRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+
             // Fill Area
             RectTransform fillAreaRect = fillArea.GetComponent<RectTransform>();
-            fillAreaRect.anchorMin = new Vector2(0, 0f);
-            fillAreaRect.anchorMax = new Vector2(1, 1f);
-            fillAreaRect.anchoredPosition = new Vector2(0, 0);
-            fillAreaRect.sizeDelta = new Vector2(-16, 0);
-     
+            SetupRect(fillAreaRect, Vector2.zero, Vector2.one, new Vector2(-height, 0), Vector2.zero);
+
             // Fill
             Image fillImage = fill.GetComponent<Image>();
-            fillImage.sprite = resources.smallSliderFill;
-            fillImage.type = Image.Type.Sliced;
-            fillImage.color = Color.white;
-            fillImage.pixelsPerUnitMultiplier = 4;
-     
+            SetupImage(fillImage, resources.sliderElement, new Vector4(1, 1, 1, 0.6f), null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Sliced, true, resources.sliderElement.texture.height / height);
+
             RectTransform fillRect = fill.GetComponent<RectTransform>();
-            fillRect.sizeDelta = new Vector2(16, 0);
-     
+            fillRect.sizeDelta = new Vector2(height, 0);
+
             // Shadow
             Image shadowImage = shadow.GetComponent<Image>();
-            shadowImage.sprite = resources.smallSliderShadow;
-            shadowImage.color = Color.white;
-            shadowImage.raycastTarget = false;
+            SetupImage(shadowImage, resources.miniSliderShadow, s_WindowElementColor, null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Simple, true, 0);
 
             RectTransform shadowRect = shadow.GetComponent<RectTransform>();
-            shadowRect.anchorMin = new Vector2(1, 0.5f);
-            shadowRect.anchorMax = new Vector2(1, 0.5f);
-            shadowRect.anchoredPosition = new Vector2(-3.33f, 0);
-            shadowRect.sizeDelta = new Vector2(25, 24);
+            SetupRect(shadowRect, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(21, 20), new Vector2(-1.55f, 0));
 
             //Highlight
             Image highlightImage = highlight.GetComponent<Image>();
-            highlightImage.sprite = resources.sliderHighlight;
-            highlightImage.color = new Color(1f, 1f, 1f, 0f);
-            highlightImage.raycastTarget = false;
+            SetupImage(highlightImage, resources.sliderHighlight, s_WhiteTransparent, null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Simple, true, 0);
 
             RectTransform highlightRect = highlight.GetComponent<RectTransform>();
-            highlightRect.anchorMin = new Vector2(1, 0.5f);
-            highlightRect.anchorMax = new Vector2(1, 0.5f);
-            highlightRect.sizeDelta = new Vector2(160, 40);
+            SetupRect(highlightRect, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(96, 24), Vector2.zero);
+
+            // Emboss
+            Image embossImage = emboss.GetComponent<Image>();
+            SetupImage(embossImage, resources.miniSliderEmboss, s_WindowElementColor, null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Sliced, true, resources.miniSliderEmboss.texture.height / height);
+
+            RectTransform embossRect = emboss.GetComponent<RectTransform>();
+            SetupRect(embossRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
 
             // Handle Area
             RectTransform handleAreaRect = handleArea.GetComponent<RectTransform>();
-            handleAreaRect.anchorMin = new Vector2(0, 0f);
-            handleAreaRect.anchorMax = new Vector2(1, 1f);
-            handleAreaRect.anchoredPosition = new Vector2(0, 0);
-            handleAreaRect.sizeDelta = new Vector2(-16, 0);
-     
+            SetupRect(handleAreaRect, Vector2.zero, Vector2.one, new Vector2(-height, 0), Vector2.zero);
+
             // Handle
             Image handleImage = handle.GetComponent<Image>();
-            handleImage.sprite = resources.sliderKnob;
-            handleImage.color = new Color(1f, 1f, 1f, 0f);
-     
+            SetupImage(handleImage, resources.sliderElement, s_WhiteTransparent, null, true, new Vector4(0, 0, 0, 0), true, Image.Type.Simple, true, 0);
+
             RectTransform handleRect = handle.GetComponent<RectTransform>();
-            handleRect.sizeDelta = new Vector2(12, -4);
-     
+            handleRect.sizeDelta = new Vector2(8, -4);
+
             // Glow
             Image glowImage = glow.GetComponent<Image>();
-            glowImage.sprite = resources.smallSliderGlow;
-            glowImage.color = new Color(1f, 1f, 1f, 0f);
-            glowImage.raycastTarget = false;
+            SetupImage(glowImage, resources.miniSliderGlow, s_WhiteTransparent, null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Simple, true, 0);
 
             RectTransform glowRect = glow.GetComponent<RectTransform>();
-            glowRect.anchorMin = new Vector2(0.5f, 0.5f);
-            glowRect.anchorMax = new Vector2(0.5f, 0.5f);
-            glowRect.sizeDelta = new Vector2(32, 32);
-     
+            SetupRect(glowRect, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(28, 28), Vector2.zero);
+
+            // Setup slider component
+            Slider slider = root.GetComponent<Slider>();
+            slider.fillRect = fill.GetComponent<RectTransform>();
+            slider.handleRect = handle.GetComponent<RectTransform>();
+            slider.targetGraphic = handleImage;
+            slider.direction = Slider.Direction.LeftToRight;
+            SetDefaultColorTransitionValues(slider);
+
+            // Animation
+            slider.transition = Selectable.Transition.Animation;
+
+            Navigation navigation = slider.navigation;
+            navigation.mode = Navigation.Mode.None;
+            slider.navigation = navigation;
+
+            Animator animator = root.GetComponent<Animator>();
+            SetAnimatorController(animator, resources.miniSliderAnimatorController);
+
+            return root;
+        }
+
+        // Small Slider 16px
+        public static GameObject CreateSmallSlider(Resources resources, float height)
+        {
+            GameObject root = CreateUIElementRoot("Small Slider", new Vector2(288f, height), typeof(Slider), typeof(Animator));
+
+            GameObject background = CreateUIObject("Background", root, typeof(Image));
+            GameObject mask = CreateUIObject("Mask", root, typeof(Mask), typeof(Image));
+            GameObject fillArea = CreateUIObject("Fill Area", mask, typeof(RectTransform));
+            GameObject fill = CreateUIObject("Fill", fillArea, typeof(Image));
+            GameObject shadow = CreateUIObject("Shadow", fill, typeof(Image));
+            GameObject highlight = CreateUIObject("Highlight", fill, typeof(Image));
+            GameObject emboss = CreateUIObject("Emboss", root, typeof(Image));
+            GameObject handleArea = CreateUIObject("Handle Slide Area", root, typeof(RectTransform));
+            GameObject handle = CreateUIObject("Handle", handleArea, typeof(Image));
+            GameObject glow = CreateUIObject("Glow", handle, typeof(Image));
+
+            // Background
+            Image backgroundImage = background.GetComponent<Image>();
+
+            float verticalPadding = height > 60 ? 0 : (height - 60) / 2;
+            Vector4 padding = new Vector4(0, verticalPadding, 0, verticalPadding);
+
+            SetupImage(backgroundImage, resources.sliderElement, s_WindowElementColor, resources.darkElementMaterial, true, padding, true, Image.Type.Sliced, true, resources.sliderElement.texture.height / height);
+
+            RectTransform backgroundRect = background.GetComponent<RectTransform>();
+            SetupRect(backgroundRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+
+            // Mask
+            Image maskImage = mask.GetComponent<Image>();
+            SetupImage(maskImage, resources.sliderElement, s_WindowElementColor, null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Sliced, true, resources.sliderElement.texture.height / height);
+
+            Mask maskMask = mask.GetComponent<Mask>();
+            maskMask.showMaskGraphic = false;
+
+            RectTransform maskRect = mask.GetComponent<RectTransform>();
+            SetupRect(maskRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+
+            // Fill Area
+            RectTransform fillAreaRect = fillArea.GetComponent<RectTransform>();
+            SetupRect(fillAreaRect, Vector2.zero, Vector2.one, new Vector2(-16, 0), Vector2.zero);
+
+            // Fill
+            Image fillImage = fill.GetComponent<Image>();
+            SetupImage(fillImage, resources.sliderElement, new Vector4(1, 1, 1, 0.6f), null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Sliced, true, resources.sliderElement.texture.height / height);
+
+            RectTransform fillRect = fill.GetComponent<RectTransform>();
+            fillRect.sizeDelta = new Vector2(16, 0);
+
+            // Shadow
+            Image shadowImage = shadow.GetComponent<Image>();
+            SetupImage(shadowImage, resources.smallSliderShadow, s_WindowElementColor, null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Simple, true, 0);
+
+            RectTransform shadowRect = shadow.GetComponent<RectTransform>();
+            SetupRect(shadowRect, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(25, 24), new Vector2(-3.33f, 0));
+
+            //Highlight
+            Image highlightImage = highlight.GetComponent<Image>();
+            SetupImage(highlightImage, resources.sliderHighlight, s_WhiteTransparent, null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Simple, true, 0);
+
+            RectTransform highlightRect = highlight.GetComponent<RectTransform>();
+            SetupRect(highlightRect, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(160, 40), Vector2.zero);
+
+            // Emboss
+            Image embossImage = emboss.GetComponent<Image>();
+            SetupImage(embossImage, resources.smallSliderEmboss, s_WindowElementColor, null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Sliced, true, resources.smallSliderEmboss.texture.height / height);
+
+            RectTransform embossRect = emboss.GetComponent<RectTransform>();
+            SetupRect(embossRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+
+            // Handle Area
+            RectTransform handleAreaRect = handleArea.GetComponent<RectTransform>();
+            SetupRect(handleAreaRect, Vector2.zero, Vector2.one, new Vector2(-16, 0), Vector2.zero);
+
+            // Handle
+            Image handleImage = handle.GetComponent<Image>();
+            SetupImage(handleImage, resources.sliderElement, s_WhiteTransparent, null, true, new Vector4(0, 0, 0, 0), true, Image.Type.Simple, true, 0);
+
+            RectTransform handleRect = handle.GetComponent<RectTransform>();
+            handleRect.sizeDelta = new Vector2(12, -4);
+
+            // Glow
+            Image glowImage = glow.GetComponent<Image>();
+            SetupImage(glowImage, resources.smallSliderGlow, s_WhiteTransparent, null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Simple, true, 0);
+
+            RectTransform glowRect = glow.GetComponent<RectTransform>();
+            SetupRect(glowRect, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(32, 32), Vector2.zero);
+
             // Setup slider component
             Slider slider = root.GetComponent<Slider>();
             slider.fillRect = fill.GetComponent<RectTransform>();
@@ -664,131 +721,98 @@ namespace JetXR.VisionUI
         }
 
         // Regular Slider 28px
-        public static GameObject CreateRegularSlider(Resources resources)
+        public static GameObject CreateRegularSlider(Resources resources, float height)
         {
-            GameObject root = CreateUIElementRoot("Regular Slider", new Vector2(288f, 28f), typeof(Slider), typeof(Animator));
+            GameObject root = CreateUIElementRoot("Regular Slider", new Vector2(288f, height), typeof(Slider), typeof(Animator));
 
             GameObject background = CreateUIObject("Background", root, typeof(Image));
-            GameObject alphaBackground = CreateUIObject("Alpha Background", background, typeof(Image));
             GameObject mask = CreateUIObject("Mask", root, typeof(Mask), typeof(Image));
             GameObject fillArea = CreateUIObject("Fill Area", mask, typeof(RectTransform));
             GameObject fill = CreateUIObject("Fill", fillArea, typeof(Image));
             GameObject shadow = CreateUIObject("Shadow", fill, typeof(Image));
             GameObject highlight = CreateUIObject("Highlight", fill, typeof(Image));
             GameObject symbol = CreateUIObject("Symbol", root, typeof(Image));
+            GameObject emboss = CreateUIObject("Emboss", root, typeof(Image));
             GameObject handleArea = CreateUIObject("Handle Slide Area", root, typeof(RectTransform));
             GameObject handle = CreateUIObject("Handle", handleArea, typeof(Image));
             GameObject glow = CreateUIObject("Glow", handle, typeof(Image));
 
             // Background
             Image backgroundImage = background.GetComponent<Image>();
-            backgroundImage.sprite = resources.regularSliderBackground;
-            backgroundImage.material = resources.darkElementMaterial;
-            backgroundImage.type = Image.Type.Sliced;
-            backgroundImage.color = s_WindowElementColor;
-            backgroundImage.pixelsPerUnitMultiplier = 4;
-            backgroundImage.raycastPadding = new Vector4(0, -16, 0, -16);
+            float verticalPadding = height > 60 ? 0 : (height - 60) / 2;
+            Vector4 padding = new Vector4(0, verticalPadding, 0, verticalPadding);
+
+            SetupImage(backgroundImage, resources.sliderElement, s_WindowElementColor, resources.darkElementMaterial, true, padding, true, Image.Type.Sliced, true, resources.sliderElement.texture.height / height);
 
             RectTransform backgroundRect = background.GetComponent<RectTransform>();
-            backgroundRect.anchorMin = new Vector2(0, 0);
-            backgroundRect.anchorMax = new Vector2(1, 1);
-            backgroundRect.sizeDelta = new Vector2(0, 0);
-
-            SetupWindowElement(background, alphaBackground, resources);
+            SetupRect(backgroundRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
 
             // Mask
             Image maskImage = mask.GetComponent<Image>();
-            maskImage.sprite = resources.regularSliderFill;
-            maskImage.type = Image.Type.Sliced;
-            maskImage.pixelsPerUnitMultiplier = 4;
-            maskImage.raycastTarget = false;
+            SetupImage(maskImage, resources.sliderElement, s_WindowElementColor, null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Sliced, true, resources.sliderElement.texture.height / height);
 
             Mask maskMask = mask.GetComponent<Mask>();
             maskMask.showMaskGraphic = false;
 
             RectTransform maskRect = mask.GetComponent<RectTransform>();
-            maskRect.anchorMin = new Vector2(0, 0f);
-            maskRect.anchorMax = new Vector2(1, 1f);
-            maskRect.sizeDelta = new Vector2(0, 0);
+            SetupRect(maskRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
 
             // Fill Area
             RectTransform fillAreaRect = fillArea.GetComponent<RectTransform>();
-            fillAreaRect.anchorMin = new Vector2(0, 0f);
-            fillAreaRect.anchorMax = new Vector2(1, 1f);
-            fillAreaRect.anchoredPosition = new Vector2(0, 0);
-            fillAreaRect.sizeDelta = new Vector2(-28, 0);
+            SetupRect(fillAreaRect, Vector2.zero, Vector2.one, new Vector2(-height, 0), Vector2.zero);
 
             // Fill
             Image fillImage = fill.GetComponent<Image>();
-            fillImage.sprite = resources.regularSliderFill;
-            fillImage.type = Image.Type.Sliced;
-            fillImage.color = Color.white;
-            fillImage.pixelsPerUnitMultiplier = 4;
+            SetupImage(fillImage, resources.sliderElement, new Vector4(1, 1, 1, 0.6f), null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Sliced, true, resources.sliderElement.texture.height / height);
 
             RectTransform fillRect = fill.GetComponent<RectTransform>();
-            fillRect.sizeDelta = new Vector2(28, 0);
+            fillRect.sizeDelta = new Vector2(height, 0);
 
             // Shadow
             Image shadowImage = shadow.GetComponent<Image>();
-            shadowImage.sprite = resources.regularSliderShadow;
-            shadowImage.color = Color.white;
-            shadowImage.pixelsPerUnitMultiplier = 4;
-            shadowImage.raycastTarget = false;
+            SetupImage(shadowImage, resources.regularSliderShadow, s_WindowElementColor, null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Simple, true, 0);
 
             RectTransform shadowRect = shadow.GetComponent<RectTransform>();
-            shadowRect.anchorMin = new Vector2(1, 0.5f);
-            shadowRect.anchorMax = new Vector2(1, 0.5f);
-            shadowRect.anchoredPosition = new Vector2(-9.53f, 0);
-            shadowRect.sizeDelta = new Vector2(37, 36);
+            SetupRect(shadowRect, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(37, 36), new Vector2(-9.53f, 0));
 
             // Highlight
             Image highlightImage = highlight.GetComponent<Image>();
-            highlightImage.sprite = resources.sliderHighlight;
-            highlightImage.color = new Color(1f, 1f, 1f, 0f);
-            highlightImage.raycastTarget = false;
+            SetupImage(highlightImage, resources.sliderHighlight, s_WhiteTransparent, null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Simple, true, 0);
 
             RectTransform highlightRect = highlight.GetComponent<RectTransform>();
-            highlightRect.anchorMin = new Vector2(1, 0.5f);
-            highlightRect.anchorMax = new Vector2(1, 0.5f);
-            highlightRect.sizeDelta = new Vector2(208, 52);
+            SetupRect(highlightRect, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(208, 52), Vector2.zero);
 
             // Symbol
             Image symbolImage = symbol.GetComponent<Image>();
-            symbolImage.sprite = resources.symbol;
-            symbolImage.color = Color.black;
-            symbolImage.raycastTarget = false;
+            SetupImage(symbolImage, resources.symbol, Color.black, null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Simple, true, 0);
 
             RectTransform symbolRect = symbol.GetComponent<RectTransform>();
-            symbolRect.anchorMin = new Vector2(0f, 0.5f);
-            symbolRect.anchorMax = new Vector2(0f, 0.5f);
-            symbolRect.anchoredPosition = new Vector2(14, 0);
-            symbolRect.sizeDelta = new Vector2(28, 28);
+            SetupRect(symbolRect, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(height, height), new Vector2(height / 2, 0));
+
+            // Emboss
+            Image embossImage = emboss.GetComponent<Image>();
+            SetupImage(embossImage, resources.regularSliderEmboss, s_WindowElementColor, null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Sliced, true, resources.regularSliderEmboss.texture.height / height);
+
+            RectTransform embossRect = emboss.GetComponent<RectTransform>();
+            SetupRect(embossRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
 
             // Handle Area
             RectTransform handleAreaRect = handleArea.GetComponent<RectTransform>();
-            handleAreaRect.anchorMin = new Vector2(0, 0f);
-            handleAreaRect.anchorMax = new Vector2(1, 1f);
-            handleAreaRect.anchoredPosition = new Vector2(0, 0);
-            handleAreaRect.sizeDelta = new Vector2(-28, 0);
+            SetupRect(handleAreaRect, Vector2.zero, Vector2.one, new Vector2(-height, 0), Vector2.zero);
 
             // Handle
             Image handleImage = handle.GetComponent<Image>();
-            handleImage.sprite = resources.sliderKnob;
-            handleImage.color = new Color(1f, 1f, 1f, 0f);
+            SetupImage(handleImage, resources.sliderElement, s_WhiteTransparent, null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Simple, true, 0);
 
             RectTransform handleRect = handle.GetComponent<RectTransform>();
-            handleRect.sizeDelta = new Vector2(20, -8);
+            SetupRect(handleRect, Vector2.zero, Vector2.one, new Vector2(20, -8), Vector2.zero);
 
             // Glow
             Image glowImage = glow.GetComponent<Image>();
-            glowImage.sprite = resources.regularSliderGlow;
-            glowImage.color = new Color(1f, 1f, 1f, 0f);
-            glowImage.raycastTarget = false;
+            SetupImage(glowImage, resources.regularSliderGlow, s_WhiteTransparent, null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Simple, true, 0);
 
             RectTransform glowRect = glow.GetComponent<RectTransform>();
-            glowRect.anchorMin = new Vector2(0.5f, 0.5f);
-            glowRect.anchorMax = new Vector2(0.5f, 0.5f);
-            glowRect.sizeDelta = new Vector2(52, 52);
+            SetupRect(glowRect, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(52, 52), Vector2.zero);
 
             // Setup slider component
             Slider slider = root.GetComponent<Slider>();
@@ -811,11 +835,126 @@ namespace JetXR.VisionUI
             return root;
         }
 
+        // Large Slider 44px
+        public static GameObject CreateLargeSlider(Resources resources, float height)
+        {
+            GameObject root = CreateUIElementRoot("Large Slider", new Vector2(288f, height), typeof(Slider), typeof(Animator));
+
+            GameObject background = CreateUIObject("Background", root, typeof(Image));
+            GameObject mask = CreateUIObject("Mask", root, typeof(Mask), typeof(Image));
+            GameObject fillArea = CreateUIObject("Fill Area", mask, typeof(RectTransform));
+            GameObject fill = CreateUIObject("Fill", fillArea, typeof(Image));
+            GameObject shadow = CreateUIObject("Shadow", fill, typeof(Image));
+            GameObject highlight = CreateUIObject("Highlight", fill, typeof(Image));
+            GameObject symbol = CreateUIObject("Symbol", root, typeof(Image));
+            GameObject emboss = CreateUIObject("Emboss", root, typeof(Image));
+            GameObject handleArea = CreateUIObject("Handle Slide Area", root, typeof(RectTransform));
+            GameObject handle = CreateUIObject("Handle", handleArea, typeof(Image));
+            GameObject glow = CreateUIObject("Glow", handle, typeof(Image));
+
+            // Background
+            Image backgroundImage = background.GetComponent<Image>();
+            float verticalPadding = height > 60 ? 0 : (height - 60) / 2;
+            Vector4 padding = new Vector4(0, verticalPadding, 0, verticalPadding);
+
+            SetupImage(backgroundImage, resources.sliderElement, s_WindowElementColor, resources.darkElementMaterial, true, padding, true, Image.Type.Sliced, true, resources.sliderElement.texture.height / height);
+
+            RectTransform backgroundRect = background.GetComponent<RectTransform>();
+            SetupRect(backgroundRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+
+            // Mask
+            Image maskImage = mask.GetComponent<Image>();
+            SetupImage(maskImage, resources.sliderElement, s_WindowElementColor, null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Sliced, true, resources.sliderElement.texture.height / height);
+
+            Mask maskMask = mask.GetComponent<Mask>();
+            maskMask.showMaskGraphic = false;
+
+            RectTransform maskRect = mask.GetComponent<RectTransform>();
+            SetupRect(maskRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+
+            // Fill Area
+            RectTransform fillAreaRect = fillArea.GetComponent<RectTransform>();
+            SetupRect(fillAreaRect, Vector2.zero, Vector2.one, new Vector2(-height, 0), Vector2.zero);
+
+            // Fill
+            Image fillImage = fill.GetComponent<Image>();
+            SetupImage(fillImage, resources.sliderElement, new Vector4(1, 1, 1, 0.6f), null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Sliced, true, resources.sliderElement.texture.height / height);
+
+            RectTransform fillRect = fill.GetComponent<RectTransform>();
+            fillRect.sizeDelta = new Vector2(height, 0);
+
+            // Shadow
+            Image shadowImage = shadow.GetComponent<Image>();
+            SetupImage(shadowImage, resources.largeSliderShadow, s_WindowElementColor, null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Simple, true, 0);
+
+            RectTransform shadowRect = shadow.GetComponent<RectTransform>();
+            SetupRect(shadowRect, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(53, 52), new Vector2(-17.5f, 0));
+
+            // Highlight
+            Image highlightImage = highlight.GetComponent<Image>();
+            SetupImage(highlightImage, resources.sliderHighlight, s_WhiteTransparent, null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Simple, true, 0);
+
+            RectTransform highlightRect = highlight.GetComponent<RectTransform>();
+            SetupRect(highlightRect, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(352, 88), Vector2.zero);
+
+            // Symbol
+            Image symbolImage = symbol.GetComponent<Image>();
+            SetupImage(symbolImage, resources.symbol, Color.black, null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Simple, true, 0);
+
+            RectTransform symbolRect = symbol.GetComponent<RectTransform>();
+            SetupRect(symbolRect, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(height, height), new Vector2(height / 2, 0));
+
+            // Emboss
+            Image embossImage = emboss.GetComponent<Image>();
+            SetupImage(embossImage, resources.largeSliderEmboss, s_WindowElementColor, null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Sliced, true, resources.largeSliderEmboss.texture.height / height);
+
+            RectTransform embossRect = emboss.GetComponent<RectTransform>();
+            SetupRect(embossRect, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+
+            // Handle Area
+            RectTransform handleAreaRect = handleArea.GetComponent<RectTransform>();
+            SetupRect(handleAreaRect, Vector2.zero, Vector2.one, new Vector2(-height, 0), Vector2.zero);
+
+            // Handle
+            Image handleImage = handle.GetComponent<Image>();
+            SetupImage(handleImage, resources.sliderElement, s_WhiteTransparent, null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Simple, true, 0);
+
+            RectTransform handleRect = handle.GetComponent<RectTransform>();
+            SetupRect(handleRect, Vector2.zero, Vector2.one, new Vector2(32, -12), Vector2.zero);
+
+            // Glow
+            Image glowImage = glow.GetComponent<Image>();
+            SetupImage(glowImage, resources.largeSliderGlow, s_WhiteTransparent, null, false, new Vector4(0, 0, 0, 0), true, Image.Type.Simple, true, 0);
+
+            RectTransform glowRect = glow.GetComponent<RectTransform>();
+            SetupRect(glowRect, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(76, 76), Vector2.zero);
+
+            // Setup slider component
+            Slider slider = root.GetComponent<Slider>();
+            slider.fillRect = fill.GetComponent<RectTransform>();
+            slider.handleRect = handle.GetComponent<RectTransform>();
+            slider.targetGraphic = handleImage;
+            slider.direction = Slider.Direction.LeftToRight;
+            SetDefaultColorTransitionValues(slider);
+
+            // Animation
+            slider.transition = Selectable.Transition.Animation;
+
+            Navigation navigation = slider.navigation;
+            navigation.mode = Navigation.Mode.None;
+            slider.navigation = navigation;
+
+            Animator animator = root.GetComponent<Animator>();
+            SetAnimatorController(animator, resources.largeSliderAnimatorController);
+
+            return root;
+        }
+
         // Throbber
         public static GameObject CreateThrobber(Resources resources)
         {
             GameObject root = CreateUIElementRoot("Throbber", new Vector2(44f, 44f), typeof(Image), typeof(Animator));
-            
+
             // Animation
             Animator animator = root.GetComponent<Animator>();
             SetAnimatorController(animator, resources.throbberAnimatorController);
@@ -850,12 +989,12 @@ namespace JetXR.VisionUI
             shadowImage.sprite = resources.windowShadow;
             shadowImage.color = Color.white;
             shadowImage.type = Image.Type.Sliced;
-            shadowImage.pixelsPerUnitMultiplier = 2;
+            shadowImage.pixelsPerUnitMultiplier = 6.1f;
 
             RectTransform shadowRect = shadow.GetComponent<RectTransform>();
             shadowRect.anchorMin = Vector2.zero;
             shadowRect.anchorMax = Vector2.one;
-            shadowRect.sizeDelta = new Vector2(16, 16);
+            shadowRect.sizeDelta = new Vector2(24, 24);
 
             // Window Bottom
             RectTransform windowBottomRect = windowBottom.GetComponent<RectTransform>();
@@ -1032,15 +1171,15 @@ namespace JetXR.VisionUI
             GameObject itemHighlight = CreateUIObject("Item Highlight", item, typeof(Image));
             GameObject itemCheckmark = CreateUIObject("Item Checkmark", item, typeof(Image));
             GameObject itemLabel = CreateUIObject("Item Label", item, typeof(TextMeshProUGUI));
-    
+
             // Scrollbar
             GameObject scrollbar = CreateScrollbar(resources);
             scrollbar.name = "Scrollbar";
             SetParentAndAlign(scrollbar, template);
-    
+
             Scrollbar scrollbarScrollbar = scrollbar.GetComponent<Scrollbar>();
             scrollbarScrollbar.SetDirection(Scrollbar.Direction.BottomToTop, true);
-    
+
             RectTransform vScrollbarRT = scrollbar.GetComponent<RectTransform>();
             vScrollbarRT.anchorMin = Vector2.right;
             vScrollbarRT.anchorMax = Vector2.one;
@@ -1144,7 +1283,7 @@ namespace JetXR.VisionUI
             templateScrollRect.verticalScrollbar = scrollbarScrollbar;
             templateScrollRect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport;
             templateScrollRect.verticalScrollbarSpacing = -3;
-            
+
             // Content
             RectTransform contentRT = content.GetComponent<RectTransform>();
             contentRT.anchorMin = new Vector2(0f, 1);
@@ -1467,11 +1606,11 @@ namespace JetXR.VisionUI
             // Content
 
             // Button 1
-            GameObject button1 = CreateSymbolButtonNoPlatter(resources);
+            GameObject button1 = CreateSymbolButtonNoPlatter(resources, 44);
             SetParentAndAlign(button1, root);
 
             // Button 2
-            GameObject button2 = CreateSymbolButtonNoPlatter(resources);
+            GameObject button2 = CreateSymbolButtonNoPlatter(resources, 44);
             SetParentAndAlign(button2, root);
 
             // Separator
@@ -1479,7 +1618,7 @@ namespace JetXR.VisionUI
             SetParentAndAlign(separator, root);
 
             // Button 3
-            GameObject button3 = CreateSymbolButtonNoPlatter(resources);
+            GameObject button3 = CreateSymbolButtonNoPlatter(resources, 44);
             SetParentAndAlign(button3, root);
 
             return root;
@@ -1576,7 +1715,7 @@ namespace JetXR.VisionUI
             // Action Buttons
             for (int i = 0; i < 2; i++)
             {
-                GameObject button = CreateRoundedRectButton(resources);
+                GameObject button = CreateRoundedRectButton(resources, 86, 44, 17);
                 GameObject highlight = button.transform.Find("Highlight").gameObject;
                 GameObject text = button.transform.Find("Text").gameObject;
                 button.name = "Action Button";
@@ -1734,7 +1873,7 @@ namespace JetXR.VisionUI
                 SetParentAndAlign(toggleObject, root);
                 Toggle toggle = toggleObject.GetComponent<Toggle>();
                 toggle.group = tabbarToggleGroup;
-                
+
                 if (i == 0)
                     toggle.isOn = true;
             }
@@ -1769,7 +1908,7 @@ namespace JetXR.VisionUI
                 labelText.text = $"Tab {i + 1}";
                 labelText.horizontalAlignment = HorizontalAlignmentOptions.Center;
             }
-            
+
             return root;
         }
 
@@ -1833,7 +1972,7 @@ namespace JetXR.VisionUI
         // Sidebar
         public static GameObject CreateSidebar(Resources resources)
         {
-            GameObject root = CreateUIElementRoot("Sidebar", new Vector2(362, -6), typeof(Image));
+            GameObject root = CreateUIElementRoot("Sidebar", new Vector2(362, -3.2f), typeof(Image));
 
             GameObject alphaBackground = CreateUIObject("Alpha Background", root, typeof(Image));
 
@@ -1858,20 +1997,28 @@ namespace JetXR.VisionUI
             SetParentAndAlign(windowControls, root);
 
             RectTransform windowControlsRect = windowControls.GetComponent<RectTransform>();
-            windowControlsRect.anchorMin = new Vector2(0.5f, 0);
-            windowControlsRect.anchorMax = new Vector2(0.5f, 0);
+            windowControlsRect.anchorMin = new Vector2(0, 0);
+            windowControlsRect.anchorMax = new Vector2(1, 0);
             windowControlsRect.pivot = new Vector2(0.5f, 1);
-            windowControlsRect.sizeDelta = new Vector2(174, 14);
+            windowControlsRect.sizeDelta = new Vector2(0, 14);
             windowControlsRect.anchoredPosition = new Vector2(0, -22);
 
             Grabber grabber = windowControls.GetComponentInChildren<Grabber>();
             grabber.SetReferences(root.transform);
 
+            GameObject resizerR = windowControls.transform.Find("Window Right Resizer").gameObject;
+            RectTransform resizerRRect = resizerR.GetComponent<RectTransform>();
+            resizerRRect.anchoredPosition = new Vector2(-32, -10.5f);
+
+            GameObject resizerL = windowControls.transform.Find("Window Left Resizer").gameObject;
+            RectTransform resizerLRect = resizerL.GetComponent<RectTransform>();
+            resizerLRect.anchoredPosition = new Vector2(32, -10.5f);
+
             GameObject window = CreateWindow(resources);
             SetParentAndAlign(window, root);
 
             WindowsStacker windowsStacker = root.GetComponent<WindowsStacker>();
-            windowsStacker.SetReferences(window);
+            windowsStacker.SetReferences(window, windowControls.transform);
 
             return root;
         }
@@ -1879,7 +2026,7 @@ namespace JetXR.VisionUI
         public static GameObject CreateWindowControls(Resources resources)
         {
             //Window Controls
-            GameObject root = CreateUIElementRoot("Window Controls", new Vector2(174, 14), typeof(RectTransform));
+            GameObject root = CreateUIElementRoot("Window Controls", new Vector2(174, 14), typeof(RectTransform), typeof(Animator));
             GameObject closeButtonWindow = CreateUIObject("Close Button Window", root, typeof(Image), typeof(Button), typeof(Animator));
             GameObject grabberObjectWindow = CreateUIObject("Grabber Window", root, typeof(Image), typeof(Button), typeof(Animator));
             GameObject closeButton = CreateUIObject("Close Button", closeButtonWindow, typeof(Image));
@@ -1888,19 +2035,16 @@ namespace JetXR.VisionUI
             GameObject grabberObject = CreateUIObject("Grabber", grabberObjectWindow, typeof(Image), typeof(BoxCollider), typeof(XRSimpleInteractable), typeof(Grabber));
             GameObject grabberAlphaBackground = CreateUIObject("Alpha Background", grabberObjectWindow, typeof(Image));
 
-            RectTransform windowControlsRect = root.GetComponent<RectTransform>();
-            windowControlsRect.anchorMin = new Vector2(0.5f, 0);
-            windowControlsRect.anchorMax = new Vector2(0.5f, 0);
-            windowControlsRect.pivot = new Vector2(0.5f, 1);
-            windowControlsRect.sizeDelta = new Vector2(174, 14);
-            windowControlsRect.anchoredPosition = new Vector2(0, -22);
+            // Animation
+            Animator animator = root.GetComponent<Animator>();
+            SetAnimatorController(animator, resources.resizerController);
 
             //Close Button Window
             RectTransform closeButtonWindowRect = closeButtonWindow.GetComponent<RectTransform>();
-            closeButtonWindowRect.anchorMin = new Vector2(0, 0.5f);
-            closeButtonWindowRect.anchorMax = new Vector2(0, 0.5f);
+            closeButtonWindowRect.anchorMin = new Vector2(0.5f, 0);
+            closeButtonWindowRect.anchorMax = new Vector2(0.5f, 0);
             closeButtonWindowRect.sizeDelta = new Vector2(14, 14);
-            closeButtonWindowRect.anchoredPosition = new Vector2(7, 0);
+            closeButtonWindowRect.anchoredPosition = new Vector2(-80, 7);
 
             Button closeButtonWindowButton = closeButtonWindow.GetComponent<Button>();
             closeButtonWindowButton.transition = Selectable.Transition.Animation;
@@ -1922,10 +2066,10 @@ namespace JetXR.VisionUI
 
             //Grabber Window
             RectTransform grabberWindowRect = grabberObjectWindow.GetComponent<RectTransform>();
-            grabberWindowRect.anchorMin = new Vector2(1, 0.5f);
-            grabberWindowRect.anchorMax = new Vector2(1, 0.5f);
+            grabberWindowRect.anchorMin = new Vector2(0.5f, 0);
+            grabberWindowRect.anchorMax = new Vector2(0.5f, 0);
             grabberWindowRect.sizeDelta = new Vector2(136, 10);
-            grabberWindowRect.anchoredPosition = new Vector2(-68, 0);
+            grabberWindowRect.anchoredPosition = new Vector2(19, 7);
 
             Button grabberWindowButton = grabberObjectWindow.GetComponent<Button>();
             grabberWindowButton.transition = Selectable.Transition.Animation;
@@ -1995,6 +2139,31 @@ namespace JetXR.VisionUI
             grabberCollider.size = new Vector3(136, 60, 1);
 
             SetupWindowElement(grabberObject, grabberAlphaBackground, resources);
+
+            //Right Resizer
+            var rightResizer = CreateWindowResizer(resources);
+            SetParentAndAlign(rightResizer, root);
+            rightResizer.name = "Window Right Resizer";
+
+            RectTransform windowRightResizerRect = rightResizer.GetComponent<RectTransform>();
+            windowRightResizerRect.pivot = new Vector2(0, 0);
+            windowRightResizerRect.anchorMin = new Vector2(1, 0);
+            windowRightResizerRect.anchorMax = new Vector2(1, 0);
+            windowRightResizerRect.sizeDelta = new Vector2(75, 75);
+            windowRightResizerRect.anchoredPosition = new Vector2(-32, 37.5f);
+
+            //Left Resizer
+            var leftResizer = CreateWindowResizer(resources);
+            SetParentAndAlign(leftResizer, root);
+            leftResizer.name = "Window Left Resizer";
+
+            RectTransform windowLeftResizerRect = leftResizer.GetComponent<RectTransform>();
+            windowLeftResizerRect.pivot = new Vector2(0, 0);
+            windowLeftResizerRect.anchorMin = Vector2.zero;
+            windowLeftResizerRect.anchorMax = Vector2.zero;
+            windowLeftResizerRect.sizeDelta = new Vector2(75, 75);
+            windowLeftResizerRect.anchoredPosition = new Vector2(32, 37.5f);
+            windowLeftResizerRect.localScale = new Vector3(-1, 1, 1);
 
             return root;
         }
@@ -2167,6 +2336,104 @@ namespace JetXR.VisionUI
             return listElement;
         }
         #endregion
+
+        //Volume
+        public static GameObject CreateVolume(Resources resources)
+        {
+            GameObject root = CreateUIElementRoot("Volume", new Vector2(64, 64), typeof(Image), typeof(Button), typeof(Animator), typeof(SpriteNumberSwitcher));
+
+            GameObject slider = CreateLargeSlider(resources, 44);
+
+            //Slider
+            slider.name = "Slider";
+            SetParentAndAlign(slider, root);
+
+            Slider sliderSlider = slider.GetComponent<Slider>();
+            sliderSlider.value = 0.5f;
+
+            GameObject sliderBackground = slider.transform.Find("Background").gameObject;
+            Image sliderBackgroundImage = sliderBackground.GetComponent<Image>();
+            sliderBackgroundImage.material = resources.windowBlurredBackgroundMaterial;
+
+            GameObject symbol = slider.transform.Find("Symbol").gameObject;
+            symbol.SetActive(false);
+
+            RectTransform sliderRect = slider.GetComponent<RectTransform>();
+            sliderRect.localRotation = Quaternion.Euler(0, 0, 90);
+            sliderRect.anchorMin = new Vector2(0.5f, 0.5f);
+            sliderRect.anchorMax = new Vector2(0.5f, 0.5f);
+            sliderRect.anchoredPosition = Vector2.zero;
+
+            slider.SetActive(false);
+
+            // Animation
+            Button button = root.GetComponent<Button>();
+            button.transition = Selectable.Transition.Animation;
+
+            Navigation navigation = button.navigation;
+            navigation.mode = Navigation.Mode.None;
+            button.navigation = navigation;
+
+            Animator animator = root.GetComponent<Animator>();
+            SetAnimatorController(animator, resources.volumeController);
+
+            // Image
+            Image symbolImage = root.GetComponent<Image>();
+            symbolImage.raycastPadding = new Vector4(0, -8, 0, -8);
+
+            // Sprite Switcher
+            SpriteNumberSwitcher symbolSwitcher = root.GetComponent<SpriteNumberSwitcher>();
+            symbolSwitcher.Sprites = new Sprite[] { resources.speakerSlash, resources.speaker1, resources.speaker2, resources.speaker3 };
+            symbolSwitcher.Target = symbolImage;
+            symbolSwitcher.SetValue(sliderSlider.value);
+
+            return root;
+        }
+
+        //Window Resizer
+        public static GameObject CreateWindowResizer(Resources resources)
+        {
+            GameObject root = CreateUIElementRoot("Window Resizer", new Vector2(75, 75), typeof(RectTransform));
+
+            GameObject positionPivot = CreateUIObject("Position Pivot", root, typeof(RectTransform));
+            GameObject trailing = CreateUIObject("Trailing", positionPivot, typeof(Image));
+            GameObject line = CreateUIObject("Line", root, typeof(Image));
+            GameObject interactable = CreateUIObject("Interactable", root, typeof(Image), typeof(Resizer), typeof(XRSimpleInteractable), typeof(BoxCollider));
+
+            // Position Pivot
+            RectTransform positionPivotRect = positionPivot.GetComponent<RectTransform>();
+            SetupRect(positionPivotRect, new Vector2(1, 0), new Vector2(1, 0), new Vector2(75, 75), new Vector2(-75, 75));
+            positionPivotRect.pivot = new Vector2(0, 1);
+
+            // Trailing
+            Image trailingImage = trailing.GetComponent<Image>();
+            trailingImage.sprite = resources.trailing;
+            trailingImage.color = Color.white;
+
+            RectTransform trailingRect = trailing.GetComponent<RectTransform>();
+            SetupRect(trailingRect, Vector2.zero, Vector2.zero, new Vector2(62.5f, 62.5f), Vector2.zero);
+            trailingRect.pivot = Vector2.zero;
+            trailingRect.localScale = new Vector3(1.2f, 1.2f, 1.2f);
+
+            // Line
+            Image lineImage = line.GetComponent<Image>();
+            lineImage.sprite = resources.buttonBackground;
+            lineImage.color = s_WhiteTransparent;
+            lineImage.type = Image.Type.Sliced;
+            lineImage.pixelsPerUnitMultiplier = 18;
+
+            RectTransform lineRect = line.GetComponent<RectTransform>();
+            SetupRect(lineRect, Vector2.zero, Vector2.zero, new Vector2(20, 10), new Vector2(-200, 5));
+
+            // Interactable
+            Image interactableImage = interactable.GetComponent<Image>();
+            interactableImage.color = new Color(1, 1, 1, 0);
+
+            BoxCollider interactableCollider = interactable.GetComponent<BoxCollider>();
+            interactableCollider.size = new Vector3(100, 100, 1);
+
+            return root;
+        }
 
         #region Setup Methods
         private static void SetupWindowElement(GameObject background, GameObject alphaBackground, Resources resources)

@@ -45,7 +45,7 @@ https://github.com/jetstyle/Apple-Vision-Pro-UI-Kit.git
 "com.jetxr.visionui": "https://github.com/jetstyle/Apple-Vision-Pro-UI-Kit.git"
 ```
 
-3. You can also download it from the Asset Store (a link will appear here soon)
+3. You can also download it from the [Asset Store](https://assetstore.unity.com/packages/tools/gui/ui-kit-for-vision-pro-os-265406)
 
 4. Prepared demo project for Meta Quest is avaliable [here](https://github.com/jetstyle/Apple-Vision-Pro-UI-Kit-Demo)
 
@@ -86,11 +86,11 @@ Demonstration of interfaces based on our package (captured on Meta Quest 2 with 
   <img alt="UI Elements 3" src="./Documentation~/UI_Elements_3.png">
 </p>
 
-1. Buttons
-    + Symbol (+ No Platter version)
-    + Text (+ No Platter version)
-    + Text + Symbol (+ No Platter version)
-    + Text Rounded Rect (+ No Platter version)
+1. Buttons (in different sizes and in two versions: with and without platter)
+    + Symbol
+    + Text
+    + Text + Symbol
+    + Text Rounded Rect
 2. List
     + Completed List
     + List Element (+ No Platter version)
@@ -98,8 +98,10 @@ Demonstration of interfaces based on our package (captured on Meta Quest 2 with 
     + Throbber
     + Progress Bar
 4. Sliders
+    + Mini Slider
     + Small Slider
     + Regular Slider
+    + Large Slider
 5. Windows
     + Window
     + Window + Tabbar
@@ -111,7 +113,9 @@ Demonstration of interfaces based on our package (captured on Meta Quest 2 with 
         * Tabbar
         * Sidebar
         * Window Controls
+        * Window Resizer
 6. Input Field
 7. Toggle
 8. Tooltip
 9. Segmented Control
+10. Volume

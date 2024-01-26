@@ -282,10 +282,10 @@ namespace JetXR.VisionUI.Editor
             CheckResource(ref visionUIResources.tabbarBlurredOverlayMaterial, "Runtime/Materials/TabbarBlurredOverlayBackground.mat");
             CheckResource(ref visionUIResources.alphaBackgroundMaterial, "Runtime/Materials/AlphaBackground.mat");
 
-            CheckProjectResource(ref visionUIResources.fontSemibold, "SF-Pro-Display-Semibold SDF");
-            CheckProjectResource(ref visionUIResources.fontBold, "SF-Pro-Display-Bold SDF");
-            CheckProjectResource(ref visionUIResources.fontMedium, "SF-Pro-Display-Medium SDF");
-            CheckProjectResource(ref visionUIResources.fontRegular, "SF-Pro-Display-Regular SDF");
+            CheckProjectResource(ref visionUIResources.fontSemibold, "Inter-SemiBold SDF");
+            CheckProjectResource(ref visionUIResources.fontBold, "Inter-Bold SDF");
+            CheckProjectResource(ref visionUIResources.fontMedium, "Inter-Medium SDF");
+            CheckProjectResource(ref visionUIResources.fontRegular, "Inter-Regular SDF");
 
             CheckResource(ref visionUIResources.buttonAnimatorController, "Runtime/Animators/ButtonController.controller");
             CheckResource(ref visionUIResources.buttonNoPlatterAnimatorController, "Runtime/Animators/ButtonNoPlatterController.controller");
@@ -293,8 +293,10 @@ namespace JetXR.VisionUI.Editor
             CheckResource(ref visionUIResources.symbolNoPlatterAnimatorController, "Runtime/Animators/SymbolNoPlatterController.controller");
             CheckResource(ref visionUIResources.symbolTextButtonController, "Runtime/Animators/SymbolTextButtonController.controller");
             CheckResource(ref visionUIResources.symbolTextButtonNoPlatterController, "Runtime/Animators/SymbolTextButtonNoPlatterController.controller");
+            CheckResource(ref visionUIResources.miniSliderAnimatorController, "Runtime/Animators/MiniSliderController.controller");
             CheckResource(ref visionUIResources.smallSliderAnimatorController, "Runtime/Animators/SmallSliderController.controller");
             CheckResource(ref visionUIResources.regularSliderAnimatorController, "Runtime/Animators/RegularSliderController.controller");
+            CheckResource(ref visionUIResources.largeSliderAnimatorController, "Runtime/Animators/LargeSliderController.controller");
             CheckResource(ref visionUIResources.throbberAnimatorController, "Runtime/Animators/ThrobberController.controller");
             CheckResource(ref visionUIResources.listElementAnimatorController, "Runtime/Animators/ListElementController.controller");
             CheckResource(ref visionUIResources.toggleAnimatorController, "Runtime/Animators/ToggleController.controller");
@@ -304,7 +306,9 @@ namespace JetXR.VisionUI.Editor
             CheckResource(ref visionUIResources.tabbarToggleController, "Runtime/Animators/TabbarToggleController.controller");
             CheckResource(ref visionUIResources.closeButtonController, "Runtime/Animators/CloseButtonController.controller");
             CheckResource(ref visionUIResources.grabberController, "Runtime/Animators/GrabberController.controller");
-
+            CheckResource(ref visionUIResources.volumeController, "Runtime/Animators/VolumeButton.controller");
+            CheckResource(ref visionUIResources.resizerController, "Runtime/Animators/Window Resizer.controller");
+            
             CheckResource(ref visionUIResources.buttonBackground, "Runtime/Sprites/Buttons/Background.png");
             CheckResource(ref visionUIResources.buttonHighlight, "Runtime/Sprites/Buttons/TextHighlight.png");
             CheckResource(ref visionUIResources.symbolHighlight, "Runtime/Sprites/Buttons/SymbolHighlight.png");
@@ -312,17 +316,29 @@ namespace JetXR.VisionUI.Editor
             CheckResource(ref visionUIResources.roundedRectBackground, "Runtime/Sprites/Buttons/RoundedRectBackground.png");
             CheckResource(ref visionUIResources.roundedRectHighlight, "Runtime/Sprites/Buttons/RoundedRectHighlight.png");
 
-            CheckResource(ref visionUIResources.sliderKnob, "Runtime/Sprites/Sliders/Knob.png");
+            CheckResource(ref visionUIResources.sliderElement, "Runtime/Sprites/Sliders/SliderElement.png");
             CheckResource(ref visionUIResources.sliderHighlight, "Runtime/Sprites/Sliders/Highlight.png");
-            CheckResource(ref visionUIResources.smallSliderBackground, "Runtime/Sprites/Sliders/SmallBackground.png");
-            CheckResource(ref visionUIResources.smallSliderFill, "Runtime/Sprites/Sliders/SmallFill.png");
+
+            CheckResource(ref visionUIResources.miniSliderShadow, "Runtime/Sprites/Sliders/MiniShadow.png");
+            CheckResource(ref visionUIResources.miniSliderGlow, "Runtime/Sprites/Sliders/MiniGlow.png");
+            CheckResource(ref visionUIResources.miniSliderEmboss, "Runtime/Sprites/Sliders/MiniEmboss.png");
+
             CheckResource(ref visionUIResources.smallSliderShadow, "Runtime/Sprites/Sliders/SmallShadow.png");
             CheckResource(ref visionUIResources.smallSliderGlow, "Runtime/Sprites/Sliders/SmallGlow.png");
+            CheckResource(ref visionUIResources.smallSliderEmboss, "Runtime/Sprites/Sliders/SmallEmboss.png");
+
+            CheckResource(ref visionUIResources.regularSliderShadow, "Runtime/Sprites/Sliders/RegularShadow.png");
+            CheckResource(ref visionUIResources.regularSliderGlow, "Runtime/Sprites/Sliders/RegularGlow.png");
+            CheckResource(ref visionUIResources.regularSliderEmboss, "Runtime/Sprites/Sliders/RegularEmboss.png");
+
+            CheckResource(ref visionUIResources.largeSliderShadow, "Runtime/Sprites/Sliders/LargeShadow.png");
+            CheckResource(ref visionUIResources.largeSliderGlow, "Runtime/Sprites/Sliders/LargeGlow.png");
+            CheckResource(ref visionUIResources.largeSliderEmboss, "Runtime/Sprites/Sliders/LargeEmboss.png");
+
 
             CheckResource(ref visionUIResources.regularSliderBackground, "Runtime/Sprites/Sliders/RegularBackground.png");
             CheckResource(ref visionUIResources.regularSliderFill, "Runtime/Sprites/Sliders/RegularFill.png");
-            CheckResource(ref visionUIResources.regularSliderShadow, "Runtime/Sprites/Sliders/RegularShadow.png");
-            CheckResource(ref visionUIResources.regularSliderGlow, "Runtime/Sprites/Sliders/RegularGlow.png");
+
 
             CheckResource(ref visionUIResources.toggleBGStateOff, "Runtime/Sprites/Toggle/BackgroundStateOff.png");
             CheckResource(ref visionUIResources.toggleBGStateOn, "Runtime/Sprites/Toggle/BackgroundStateOn.png");
@@ -371,100 +387,342 @@ namespace JetXR.VisionUI.Editor
             CheckResource(ref visionUIResources.tabbarShadow, "Runtime/Sprites/Tabbar/TabbarShadow.png");
 
             CheckResource(ref visionUIResources.segmentedControlHighlight, "Runtime/Sprites/SegmentedControl/SegmentedControlHighlight.png");
+
+            CheckResource(ref visionUIResources.speakerSlash, "Runtime/Sprites/Volume/speakerSlash.png");
+            CheckResource(ref visionUIResources.speaker1, "Runtime/Sprites/Volume/speaker1.png");
+            CheckResource(ref visionUIResources.speaker2, "Runtime/Sprites/Volume/speaker2.png");
+            CheckResource(ref visionUIResources.speaker3, "Runtime/Sprites/Volume/speaker3.png");
+
+            CheckResource(ref visionUIResources.trailing, "Runtime/Sprites/Resizer/Trailing.png");
+            
         }
 
         #region Buttons
-        [MenuItem("GameObject/Vision UI/Buttons/Button - Text", false, 10)]
-        static public void AddTextButton(MenuCommand menuCommand)
+
+        #region Button - Text
+
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Text/Small 32px", false, 10)]
+        static public void AddTextButtonSmall(MenuCommand menuCommand)
         {
             GameObject go;
             using (new FactorySwapToEditor())
-                go = VisionControls.CreateTextButton(GetStandardResources());
+                go = VisionControls.CreateTextButton(GetStandardResources(), 65f, 32f, 15f);
             PlaceUIElementRoot(go, menuCommand);
         }
 
-        [MenuItem("GameObject/Vision UI/Buttons/Button - Text (No Platter)", false, 10)]
-        static public void AddTextButtonNoPlatter(MenuCommand menuCommand)
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Text/Standard 44px", false, 10)]
+        static public void AddTextButtonStandard(MenuCommand menuCommand)
         {
             GameObject go;
             using (new FactorySwapToEditor())
-                go = VisionControls.CreateTextButtonNoPlatter(GetStandardResources());
+                go = VisionControls.CreateTextButton(GetStandardResources(), 86f, 44f, 17f);
             PlaceUIElementRoot(go, menuCommand);
         }
 
-        [MenuItem("GameObject/Vision UI/Buttons/Button - Text+Symbol", false, 10)]
-        static public void AddTextSymbolButton(MenuCommand menuCommand)
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Text/Large 52px", false, 10)]
+        static public void AddTextButtonLarge(MenuCommand menuCommand)
         {
             GameObject go;
             using (new FactorySwapToEditor())
-                go = VisionControls.CreateTextSymbolButton(GetStandardResources());
+                go = VisionControls.CreateTextButton(GetStandardResources(), 101f, 52f, 19f);
             PlaceUIElementRoot(go, menuCommand);
         }
 
-        [MenuItem("GameObject/Vision UI/Buttons/Button - Text+Symbol (No Platter)", false, 10)]
-        static public void AddTextSymbolButtonNoPlatter(MenuCommand menuCommand)
+        #endregion
+
+        #region Button - Text (No Platter)
+
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Text (No Platter)/Small 32px", false, 10)]
+        static public void AddTextButtonNoPlatterSmall(MenuCommand menuCommand)
         {
             GameObject go;
             using (new FactorySwapToEditor())
-                go = VisionControls.CreateTextSymbolButtonNoPlatter(GetStandardResources());
+                go = VisionControls.CreateTextButtonNoPlatter(GetStandardResources(), 65f, 32f, 15f);
             PlaceUIElementRoot(go, menuCommand);
         }
 
-        [MenuItem("GameObject/Vision UI/Buttons/Button - Symbol", false, 10)]
-        static public void AddSymbolButton(MenuCommand menuCommand)
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Text (No Platter)/Standard 44px", false, 10)]
+        static public void AddTextButtonNoPlatterStandard(MenuCommand menuCommand)
         {
             GameObject go;
             using (new FactorySwapToEditor())
-                go = VisionControls.CreateSymbolButton(GetStandardResources());
+                go = VisionControls.CreateTextButtonNoPlatter(GetStandardResources(), 86f, 44f, 17f);
             PlaceUIElementRoot(go, menuCommand);
         }
 
-        [MenuItem("GameObject/Vision UI/Buttons/Button - Symbol (No Platter)", false, 10)]
-        static public void AddSymbolButtonNoPlatter(MenuCommand menuCommand)
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Text (No Platter)/Large 52px", false, 10)]
+        static public void AddTextButtonNoPlatterLarge(MenuCommand menuCommand)
         {
             GameObject go;
             using (new FactorySwapToEditor())
-                go = VisionControls.CreateSymbolButtonNoPlatter(GetStandardResources());
+                go = VisionControls.CreateTextButtonNoPlatter(GetStandardResources(), 101f, 52f, 19f);
             PlaceUIElementRoot(go, menuCommand);
         }
 
-        [MenuItem("GameObject/Vision UI/Buttons/Button - Text Rounded Rect", false, 10)]
-        static public void AddRoundedRectButton(MenuCommand menuCommand)
+        #endregion
+
+        #region Button - Text+Symbol
+
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Text+Symbol/Small 32px", false, 10)]
+        static public void AddTextSymbolButtonSmall(MenuCommand menuCommand)
         {
             GameObject go;
             using (new FactorySwapToEditor())
-                go = VisionControls.CreateRoundedRectButton(GetStandardResources());
+                go = VisionControls.CreateTextSymbolButton(GetStandardResources(), 91f, 32f, 15f);
             PlaceUIElementRoot(go, menuCommand);
         }
 
-        [MenuItem("GameObject/Vision UI/Buttons/Button - Text Rounded Rect (No Platter)", false, 10)]
-        static public void AddRoundedRectButtonNoPlatter(MenuCommand menuCommand)
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Text+Symbol/Standard 44px", false, 10)]
+        static public void AddTextSymbolButtonStandard(MenuCommand menuCommand)
         {
             GameObject go;
             using (new FactorySwapToEditor())
-                go = VisionControls.CreateRoundedRectButtonNoPlatter(GetStandardResources());
+                go = VisionControls.CreateTextSymbolButton(GetStandardResources(), 120f, 44f, 17f);
             PlaceUIElementRoot(go, menuCommand);
         }
+
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Text+Symbol/Large 52px", false, 10)]
+        static public void AddTextSymbolButtonLarge(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateTextSymbolButton(GetStandardResources(), 139f, 52f, 19f);
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        #endregion
+
+        #region Button - Text+Symbol (No Platter)
+
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Text+Symbol (No Platter)/Small 32px", false, 10)]
+        static public void AddTextSymbolButtonNoPlatterSmall(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateTextSymbolButtonNoPlatter(GetStandardResources(), 91f, 32f, 15f);
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Text+Symbol (No Platter)/Standard 44px", false, 10)]
+        static public void AddTextSymbolButtonNoPlatterStandard(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateTextSymbolButtonNoPlatter(GetStandardResources(), 120f, 44f, 17f);
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Text+Symbol (No Platter)/Large 52px", false, 10)]
+        static public void AddTextSymbolButtonNoPlatterLarge(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateTextSymbolButtonNoPlatter(GetStandardResources(), 139f, 52f, 19f);
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        #endregion
+
+        #region Button - Symbol
+
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Symbol/Mini 28px", false, 10)]
+        static public void AddSymbolButtonMini(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateSymbolButton(GetStandardResources(), 28f);
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Symbol/Small 32px", false, 10)]
+        static public void AddSymbolButtonSmall(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateSymbolButton(GetStandardResources(), 32f);
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Symbol/Standard 44px", false, 10)]
+        static public void AddSymbolButtonStandard(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateSymbolButton(GetStandardResources(), 44f);
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Symbol/Large 52px", false, 10)]
+        static public void AddSymbolButtonLarge(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateSymbolButton(GetStandardResources(), 52f);
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Symbol/Extra Large 64px", false, 10)]
+        static public void AddSymbolButtonExtraLarge(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateSymbolButton(GetStandardResources(), 64f);
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        #endregion
+
+        #region Button - Symbol (No Platter)
+
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Symbol (No Platter)/Mini 28px", false, 10)]
+        static public void AddSymbolButtonNoPlatterMini(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateSymbolButtonNoPlatter(GetStandardResources(), 28f);
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Symbol (No Platter)/Small 32px", false, 10)]
+        static public void AddSymbolButtonNoPlatterSmall(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateSymbolButtonNoPlatter(GetStandardResources(), 32f);
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Symbol (No Platter)/Standard 44px", false, 10)]
+        static public void AddSymbolButtonNoPlatterStandard(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateSymbolButtonNoPlatter(GetStandardResources(), 44f);
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Symbol (No Platter)/Large 52px", false, 10)]
+        static public void AddSymbolButtonNoPlatterLarge(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateSymbolButtonNoPlatter(GetStandardResources(), 52f);
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Symbol (No Platter)/Extra Large 64px", false, 10)]
+        static public void AddSymbolButtonNoPlatterExtraLarge(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateSymbolButtonNoPlatter(GetStandardResources(), 64f);
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        #endregion
+
+        #region Button - Text Rounded Rect
+
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Text Rounded Rect/Small 32px", false, 10)]
+        static public void AddRoundedRectButtonSmall(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateRoundedRectButton(GetStandardResources(), 65f, 32f, 15f);
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Text Rounded Rect/Standard 44px", false, 10)]
+        static public void AddRoundedRectButtonStandard(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateRoundedRectButton(GetStandardResources(), 86f, 44f, 17f);
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Text Rounded Rect/Large 52px", false, 10)]
+        static public void AddRoundedRectButtonLarge(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateRoundedRectButton(GetStandardResources(), 101f, 52f, 19f);
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        #endregion
+
+        #region Button - Button - Text Rounded Rect (No Platter)
+
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Text Rounded Rect (No Platter)/Small 32px", false, 10)]
+        static public void AddRoundedRectButtonNoPlatterSmall(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateRoundedRectButtonNoPlatter(GetStandardResources(), 65f, 32f, 15f);
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Text Rounded Rect (No Platter)/Standard 44px", false, 10)]
+        static public void AddRoundedRectButtonNoPlatterStandard(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateRoundedRectButtonNoPlatter(GetStandardResources(), 86f, 44f, 17f);
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        [MenuItem("GameObject/Vision UI/Buttons/Button - Text Rounded Rect (No Platter)/Large 52px", false, 10)]
+        static public void AddRoundedRectButtonNoPlatterLarge(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateRoundedRectButtonNoPlatter(GetStandardResources(), 101f, 52f, 19f);
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        #endregion
+
         #endregion
 
         #region Sliders
-        [MenuItem("GameObject/Vision UI/Sliders/Small Slider", false, 10)]
+
+       [MenuItem("GameObject/Vision UI/Sliders/Mini Slider 12px", false, 10)]
+       static public void AddMiniSlider(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateMiniSlider(GetStandardResources(), 12f);
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        [MenuItem("GameObject/Vision UI/Sliders/Small Slider 16px", false, 10)]
         static public void AddSmallSlider(MenuCommand menuCommand)
         {
             GameObject go;
             using (new FactorySwapToEditor())
-                go = VisionControls.CreateSmallSlider(GetStandardResources());
+                go = VisionControls.CreateSmallSlider(GetStandardResources(), 16f);
             PlaceUIElementRoot(go, menuCommand);
         }
 
-        [MenuItem("GameObject/Vision UI/Sliders/Regular Slider", false, 10)]
+        [MenuItem("GameObject/Vision UI/Sliders/Regular Slider 28px", false, 10)]
         static public void AddRegularSlider(MenuCommand menuCommand)
         {
             GameObject go;
             using (new FactorySwapToEditor())
-                go = VisionControls.CreateRegularSlider(GetStandardResources());
+                go = VisionControls.CreateRegularSlider(GetStandardResources(), 28f);
             PlaceUIElementRoot(go, menuCommand);
         }
+
+        [MenuItem("GameObject/Vision UI/Sliders/Large Slider 44px", false, 10)]
+        static public void AddLargeSlider(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateLargeSlider(GetStandardResources(), 44f);
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
         #endregion
 
         #region Progress Indicators
@@ -572,7 +830,24 @@ namespace JetXR.VisionUI.Editor
             var closeButtonWindow = windowControls.Find($"Close Button Window");
 
             UnityEventTools.AddPersistentListener(closeButtonWindow.GetComponent<Button>().onClick, go.GetComponent<WindowsStacker>().CloseWindow);
+
+            Transform windowRightResizer = windowControls.Find("Window Right Resizer");
+            Transform interactableR = windowRightResizer.Find("Interactable");
+            
+            WindowsStacker stackerR = interactableR.GetComponentInParent<WindowsStacker>();
+            GameObject objectToTransformR = stackerR == null ? go.transform.parent.gameObject : stackerR.gameObject;
+            
+            interactableR.GetComponent<Resizer>().SetReferences(objectToTransformR, windowControls.GetComponent<Animator>(), "RHovered");
+            
+            Transform windowLeftResizer = windowControls.Find("Window Left Resizer");
+            Transform interactableL = windowLeftResizer.Find("Interactable");
+            
+            WindowsStacker stackerL = interactableL.GetComponentInParent<WindowsStacker>();
+            GameObject objectToTransformL = stackerL == null ? go.transform.parent.gameObject : stackerL.gameObject;
+            
+            interactableL.GetComponent<Resizer>().SetReferences(objectToTransformL, windowControls.GetComponent<Animator>(), "LHovered");
         }
+
         #endregion
 
         #region Window Add-ons
@@ -632,7 +907,7 @@ namespace JetXR.VisionUI.Editor
             sidebarRect.anchorMin = Vector2.zero;
             sidebarRect.anchorMax = new Vector2(0, 1);
             sidebarRect.pivot = new Vector2(0, 0.5f);
-            sidebarRect.anchoredPosition = new Vector2(3, 0);
+            sidebarRect.anchoredPosition = new Vector2(1.6f, 0);
         }
 
         [MenuItem("GameObject/Vision UI/Windows/Add-ons/Window Controls", false, 10)]
@@ -644,15 +919,56 @@ namespace JetXR.VisionUI.Editor
             PlaceUIElementRoot(go, menuCommand);
 
             RectTransform windowControlsRect = go.GetComponent<RectTransform>();
-            windowControlsRect.anchorMin = new Vector2(0.5f, 0);
-            windowControlsRect.anchorMax = new Vector2(0.5f, 0);
+            windowControlsRect.anchorMin = new Vector2(0, 0);
+            windowControlsRect.anchorMax = new Vector2(1, 0);
             windowControlsRect.pivot = new Vector2(0.5f, 1);
-            windowControlsRect.sizeDelta = new Vector2(174, 14);
+            windowControlsRect.sizeDelta = new Vector2(0, 14);
             windowControlsRect.anchoredPosition = new Vector2(0, -22);
 
             Grabber grabber = go.GetComponentInChildren<Grabber>();
             grabber.SetReferences((menuCommand.context as GameObject).transform);
+
+            Transform windowRightResizer = go.transform.Find("Window Right Resizer");
+            Transform interactableR = windowRightResizer.transform.Find("Interactable");
+
+            WindowsStacker stackerR = interactableR.GetComponentInParent<WindowsStacker>();
+            GameObject objectToTransformR = stackerR == null ? go.transform.parent.gameObject : stackerR.gameObject;
+
+            interactableR.GetComponent<Resizer>().SetReferences(objectToTransformR, go.GetComponent<Animator>(), "RHovered");
+
+            Transform windowLeftResizer = go.transform.Find("Window Left Resizer");
+            Transform interactableL = windowLeftResizer.transform.Find("Interactable");
+
+            WindowsStacker stackerL = interactableL.GetComponentInParent<WindowsStacker>();
+            GameObject objectToTransformL = stackerL == null ? go.transform.parent.gameObject : stackerL.gameObject;
+
+            interactableL.GetComponent<Resizer>().SetReferences(objectToTransformL, go.GetComponent<Animator>(), "LHovered");
         }
+
+        [MenuItem("GameObject/Vision UI/Windows/Add-ons/Window Resizer", false, 10)]
+        static public void AddWindowResizer(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateWindowResizer(GetStandardResources());
+            PlaceUIElementRoot(go, menuCommand);
+
+            RectTransform windowResizerRect = go.GetComponent<RectTransform>();
+            windowResizerRect.pivot = new Vector2(0, 0);
+            windowResizerRect.anchorMin = new Vector2(1, 0);
+            windowResizerRect.anchorMax = new Vector2(1, 0);
+            windowResizerRect.sizeDelta = new Vector2(75, 75);
+
+            Transform interactable = go.transform.Find("Interactable");
+
+            Resizer interactableResizer = interactable.GetComponent<Resizer>();
+
+            WindowsStacker stacker = interactable.GetComponentInParent<WindowsStacker>();
+            GameObject objectToTransform = stacker == null ? go.transform.parent.gameObject : stacker.gameObject;
+
+            interactableResizer.SetReferences(objectToTransform, null, "RHovered");
+        }
+
         #endregion
 
         #region List
@@ -765,6 +1081,22 @@ namespace JetXR.VisionUI.Editor
             using (new FactorySwapToEditor())
                 go = VisionControls.CreateSegmentedControl(GetStandardResources());
             PlaceUIElementRoot(go, menuCommand);
+        }
+
+        [MenuItem("GameObject/Vision UI/Volume", false, 10)]
+        static public void AddVolume(MenuCommand menuCommand)
+        {
+            GameObject go;
+            using (new FactorySwapToEditor())
+                go = VisionControls.CreateVolume(GetStandardResources());
+            PlaceUIElementRoot(go, menuCommand);
+
+            GameObject sliderObject = go.transform.Find("Slider").gameObject;
+            Slider slider = sliderObject.GetComponent<Slider>();
+
+            SpriteNumberSwitcher switcher = go.GetComponent<SpriteNumberSwitcher>();
+
+            UnityEventTools.AddPersistentListener(slider.onValueChanged, switcher.SetValue);
         }
     }
 }

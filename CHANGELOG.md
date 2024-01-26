@@ -6,6 +6,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- Headers should be listed in this order: Added, Changed, Deprecated, Removed, Fixed, Security -->
 
+## [1.2.0] - 2024-01-26
+Added:
+- New menu item - Mini Slider "Vision UI/Sliders/Mini Slider"
+- New menu item - Large Slider "Vision UI/Sliders/Large Slider"
+- New menu item - Window Resizer "Vision UI/Windows/Add-ons/Window Resizer"
+- New menu item - Volume "Vision UI/Volume"
+- Different sizes for all button variants
+- Fonts from "Inter" family and license for this
+- Documentation
+
+Removed:
+- Fonts from "SF Pro Display" family
+
+Fixed:
+- Shadow around the window
+- Sidebar margins
+- Seam of blurred cubemap
+
 ## [1.1.0] - 2023-09-27
 Added:
 - Window zoom in/out and window rotation feature to the grabber
