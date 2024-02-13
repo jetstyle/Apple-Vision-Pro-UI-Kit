@@ -6,7 +6,7 @@
 <h4 align="center">
   <a href="https://jet.style/">JetStyle</a> |
   <a href="https://jetxr.style/">JetXR</a> |
-  <a href="https://discord.gg/YYprp42G">Discord</a>
+  <a href="https://discord.gg/2GegQUMW">Discord</a>
 </h4>
 
 ### Apple Vision Pro UI Kit © 2023 JetStyle
